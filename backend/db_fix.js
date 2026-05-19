@@ -22,10 +22,10 @@ async function fix() {
     );
     console.log('Sun TV Update:', res1);
 
-    // 2. Update Vijay tv HD (using the user-provided link)
+    // 2. Update Vijay tv HD (using direct HLS m3u8 stream)
     const res2 = await Channel.updateOne(
       { name: /Vijay/i },
-      { $set: { videoUrl: 'https://jtvxweb.pages.dev/pind?id=368' } }
+      { $set: { videoUrl: 'https://mini.allinonereborn.fun/jiotv-inn/app/ts_live_368.m3u8' } }
     );
     console.log('Vijay TV Update:', res2);
 

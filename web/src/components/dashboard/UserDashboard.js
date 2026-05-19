@@ -325,7 +325,7 @@ const UserDashboard = ({ onLogout }) => {
   };
 
   return (
-    <div className="prime-root">
+    <div className={`prime-root ${selectedChannel ? "has-active-channel" : ""}`}>
       {/* 🚀 1. GILDED HEADER */}
       <header className="prime-header">
         <div className="prime-brand">
@@ -494,6 +494,9 @@ const UserDashboard = ({ onLogout }) => {
           {selectedChannel ? (
             <>
               <div className="prime-player-header">
+                <button className="prime-btn-back" onClick={() => setSelectedChannel(null)}>
+                  ← Back to Channels
+                </button>
                 <div className="header-meta-left">
                   <h2>{selectedChannel.name}</h2>
                   <span className="prime-badge-pill">

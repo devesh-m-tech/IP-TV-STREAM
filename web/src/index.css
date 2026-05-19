@@ -1085,6 +1085,10 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   box-shadow: 0 6px 20px rgba(245,158,11,0.4);
 }
 
+.prime-btn-back {
+  display: none;
+}
+
 /* ---------- 11. RESPONSIVENESS ---------- */
 @media (max-width: 992px) {
   .prime-sidebar { width: 260px; }
@@ -1100,6 +1104,52 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   .prime-video-container { min-height: auto; height: auto; aspect-ratio: 16 / 9; }
   .prime-player-controls { flex-direction: column; gap: 12px; }
   .controls-left, .controls-center, .controls-right { width: 100%; justify-content: center; }
+
+  /* Mobile Back Button */
+  .prime-btn-back {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background: rgba(255, 255, 255, 0.08);
+    color: var(--text-light);
+    border: 1px solid var(--border-dim);
+    border-radius: var(--radius-md);
+    font-size: 13px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-right: auto;
+    margin-bottom: 8px;
+  }
+  .prime-btn-back:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: var(--accent-gold);
+    border-color: var(--accent-gold);
+  }
+
+  .prime-player-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+
+  /* Full Focus Active Channel View on Mobile */
+  .has-active-channel .prime-header,
+  .has-active-channel .prime-search-wrapper,
+  .has-active-channel .prime-nav-section,
+  .has-active-channel .prime-sidebar,
+  .has-active-channel .prime-footer {
+    display: none !important;
+  }
+
+  .has-active-channel .prime-player-area {
+    padding: 16px 12px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 92vh;
+  }
 }
 
 @media (max-width: 576px) {

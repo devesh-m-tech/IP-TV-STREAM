@@ -192,7 +192,7 @@ const UserDashboard = ({ onLogout }) => {
         videoElement.src = finalUrl;
         videoElement.onloadedmetadata = () => {
           setLoading(false);
-          videoElement.play().catch(() => {});
+          videoElement.play().catch(() => { });
         };
         videoElement.onerror = () => {
           setLoading(false);
@@ -207,7 +207,7 @@ const UserDashboard = ({ onLogout }) => {
         videoElement.volume = volume;
         videoElement.onloadedmetadata = () => {
           setLoading(false);
-          videoElement.play().catch(() => {});
+          videoElement.play().catch(() => { });
         };
         videoElement.onerror = () => {
           setLoading(false);
@@ -236,6 +236,7 @@ const UserDashboard = ({ onLogout }) => {
     return () => {
       if (hls) hls.destroy();
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChannel, useProxy]);
 
   const handleChannelSelect = (channel) => {
@@ -281,7 +282,7 @@ const UserDashboard = ({ onLogout }) => {
     const video = videoRef.current;
     if (video) {
       if (video.paused) {
-        video.play().catch(() => {});
+        video.play().catch(() => { });
       } else {
         video.pause();
       }
@@ -419,9 +420,8 @@ const UserDashboard = ({ onLogout }) => {
                   return (
                     <div
                       key={channel.id}
-                      className={`prime-channel-item ${
-                        selectedChannel?.id === channel.id ? "active" : ""
-                      }`}
+                      className={`prime-channel-item ${selectedChannel?.id === channel.id ? "active" : ""
+                        }`}
                       onClick={() => handleChannelSelect(channel)}
                     >
                       <div className="prime-channel-avatar">
@@ -636,9 +636,8 @@ const UserDashboard = ({ onLogout }) => {
                   plans.map((p) => (
                     <div
                       key={p.id}
-                      className={`plan-tier-card ${
-                        selectedPlanForUpgrade?.id === p.id ? "selected" : ""
-                      }`}
+                      className={`plan-tier-card ${selectedPlanForUpgrade?.id === p.id ? "selected" : ""
+                        }`}
                       onClick={() => setSelectedPlanForUpgrade(p)}
                     >
                       <div className="tier-header">

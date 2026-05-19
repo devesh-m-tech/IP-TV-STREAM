@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import "../../index.css";
 import Hls from "hls.js";
 
-const API_BASE = "http://localhost:4000/api";
+const API_BASE = "https://ip-tv-stream.onrender.com/api";
 
 const UserDashboard = ({ onLogout }) => {
   const [selectedLanguage, setSelectedLanguage] = useState("Tamil");

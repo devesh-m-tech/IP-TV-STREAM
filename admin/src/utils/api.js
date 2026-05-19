@@ -2,7 +2,7 @@
 import axios from "axios";
 
 const API = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || "http://localhost:4000/api",
+  baseURL: process.env.REACT_APP_API_URL || "https://ip-tv-stream.onrender.com/api",
   headers: { "Content-Type": "application/json" },
 });
 

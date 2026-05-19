@@ -4,7 +4,7 @@ import "../../index.css";
 
 const LANGUAGES = ["Tamil","English","Hindi","Telugu","Malayalam","Kannada","Bengali"];
 const CATEGORIES = ["Entertainment","Movies","Sports","News","Kids","Music","Lifestyle"];
-const BACKEND_URL = "http://localhost:4000"; 
+const BACKEND_URL = "https://ip-tv-stream.onrender.com"; 
 
 export default function ChannelManagement() {
   const [channels, setChannels] = useState([]);

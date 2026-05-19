@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import API from "../../utils/api";
 import "../../index.css";
 
-const BACKEND_URL = "http://localhost:4000";
+const BACKEND_URL = "https://ip-tv-stream.onrender.com";
 
 export default function DashboardOverview() {
   const [stats, setStats] = useState({ users: 0, channels: 0, activeDevices: 0 });

@@ -60,36 +60,37 @@ const seedUser = async () => {
 
 const seedPlans = async () => {
   try {
-    // Clear old USD plans to trigger re-seeding with INR values
-    await Plan.deleteMany({});
-    const defaultPlans = [
-      {
-        name: "Basic SD Plan",
-        price: 149.00,
-        duration: "Monthly",
-        maxDevices: 1,
-        resolution: "SD",
-        features: ["Access to 100+ Channels", "Standard SD quality", "Single screen view"]
-      },
-      {
-        name: "Standard HD Plan",
-        price: 299.00,
-        duration: "Monthly",
-        maxDevices: 3,
-        resolution: "HD",
-        features: ["Access to 300+ Channels", "Full HD (1080p)", "Up to 3 devices concurrently", "Ad-Free Streaming"]
-      },
-      {
-        name: "Premium 4K Plan",
-        price: 499.00,
-        duration: "Monthly",
-        maxDevices: 5,
-        resolution: "UHD",
-        features: ["Access to 1000+ Channels", "Ultra HD (4K) + HDR", "Up to 5 devices concurrently", "Priority 24/7 Support"]
-      }
-    ];
-    await Plan.insertMany(defaultPlans);
-    console.log("🎫 Seeded default subscription plans in Indian Rupees (INR)");
+    const plansExist = await Plan.findOne();
+    if (!plansExist) {
+      const defaultPlans = [
+        {
+          name: "Basic SD Plan",
+          price: 149.00,
+          duration: "Monthly",
+          maxDevices: 1,
+          resolution: "SD",
+          features: ["Access to 100+ Channels", "Standard SD quality", "Single screen view"]
+        },
+        {
+          name: "Standard HD Plan",
+          price: 299.00,
+          duration: "Monthly",
+          maxDevices: 3,
+          resolution: "HD",
+          features: ["Access to 300+ Channels", "Full HD (1080p)", "Up to 3 devices concurrently", "Ad-Free Streaming"]
+        },
+        {
+          name: "Premium 4K Plan",
+          price: 499.00,
+          duration: "Monthly",
+          maxDevices: 5,
+          resolution: "UHD",
+          features: ["Access to 1000+ Channels", "Ultra HD (4K) + HDR", "Up to 5 devices concurrently", "Priority 24/7 Support"]
+        }
+      ];
+      await Plan.insertMany(defaultPlans);
+      console.log("🎫 Seeded default subscription plans in Indian Rupees (INR)");
+    }
   } catch (err) {
     console.error("❌ Error seeding plans:", err.message);
   }
@@ -97,20 +98,21 @@ const seedPlans = async () => {
 
 const seedTransactions = async () => {
   try {
-    // Clear old USD transactions to trigger re-seeding with INR values
-    await Transaction.deleteMany({});
-    const mockTxs = [
-      { userEmail: "john@gmail.com", planName: "Standard HD Plan", amount: 299.00, status: "Success", paymentMethod: "Razorpay", createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
-      { userEmail: "alice@yahoo.com", planName: "Premium 4K Plan", amount: 499.00, status: "Success", paymentMethod: "UPI Pay", createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) },
-      { userEmail: "bob@iptv.com", planName: "Basic SD Plan", amount: 149.00, status: "Success", paymentMethod: "Razorpay", createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000) },
-      { userEmail: "clara@outlook.com", planName: "Standard HD Plan", amount: 299.00, status: "Failed", paymentMethod: "NetBanking", createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) },
-      { userEmail: "user@iptv.com", planName: "Premium 4K Plan", amount: 499.00, status: "Success", paymentMethod: "Credit Card", createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) },
-      { userEmail: "david@gmail.com", planName: "Standard HD Plan", amount: 299.00, status: "Success", paymentMethod: "Razorpay", createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) },
-      { userEmail: "sophia@web.de", planName: "Premium 4K Plan", amount: 499.00, status: "Success", paymentMethod: "UPI Pay", createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) },
-      { userEmail: "emma@test.com", planName: "Basic SD Plan", amount: 149.00, status: "Success", paymentMethod: "Razorpay", createdAt: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000) }
-    ];
-    await Transaction.insertMany(mockTxs);
-    console.log("💸 Seeded mock revenue transactions in Indian Rupees (INR)");
+    const txsExist = await Transaction.findOne();
+    if (!txsExist) {
+      const mockTxs = [
+        { userEmail: "john@gmail.com", planName: "Standard HD Plan", amount: 299.00, status: "Success", paymentMethod: "Razorpay", createdAt: new Date(Date.now() - 2 * 24 * 60 * 60 * 1000) },
+        { userEmail: "alice@yahoo.com", planName: "Premium 4K Plan", amount: 499.00, status: "Success", paymentMethod: "UPI Pay", createdAt: new Date(Date.now() - 5 * 24 * 60 * 60 * 1000) },
+        { userEmail: "bob@iptv.com", planName: "Basic SD Plan", amount: 149.00, status: "Success", paymentMethod: "Razorpay", createdAt: new Date(Date.now() - 8 * 24 * 60 * 60 * 1000) },
+        { userEmail: "clara@outlook.com", planName: "Standard HD Plan", amount: 299.00, status: "Failed", paymentMethod: "NetBanking", createdAt: new Date(Date.now() - 10 * 24 * 60 * 60 * 1000) },
+        { userEmail: "user@iptv.com", planName: "Premium 4K Plan", amount: 499.00, status: "Success", paymentMethod: "Credit Card", createdAt: new Date(Date.now() - 15 * 24 * 60 * 60 * 1000) },
+        { userEmail: "david@gmail.com", planName: "Standard HD Plan", amount: 299.00, status: "Success", paymentMethod: "Razorpay", createdAt: new Date(Date.now() - 20 * 24 * 60 * 60 * 1000) },
+        { userEmail: "sophia@web.de", planName: "Premium 4K Plan", amount: 499.00, status: "Success", paymentMethod: "UPI Pay", createdAt: new Date(Date.now() - 25 * 24 * 60 * 60 * 1000) },
+        { userEmail: "emma@test.com", planName: "Basic SD Plan", amount: 149.00, status: "Success", paymentMethod: "Razorpay", createdAt: new Date(Date.now() - 28 * 24 * 60 * 60 * 1000) }
+      ];
+      await Transaction.insertMany(mockTxs);
+      console.log("💸 Seeded mock revenue transactions in Indian Rupees (INR)");
+    }
   } catch (err) {
     console.error("❌ Error seeding transactions:", err.message);
   }

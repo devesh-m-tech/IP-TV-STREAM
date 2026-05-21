@@ -18,16 +18,16 @@ export default function DashboardOverview() {
           API.get("/admin/users"),
           API.get("/channels")
         ]);
-        
+
         let activeCount = 0;
         const users = uRes.data;
-        
+
         // Fetch devices for active device count
         await Promise.all(users.map(async (u) => {
-           try {
-             const devRes = await API.get(`/admin/users/${u.id}/devices`);
-             activeCount += devRes.data.length;
-           } catch {}
+          try {
+            const devRes = await API.get(`/admin/users/${u.id}/devices`);
+            activeCount += devRes.data.length;
+          } catch { }
         }));
 
         setStats({
@@ -43,8 +43,8 @@ export default function DashboardOverview() {
           logo: ch.logo && !ch.logo.startsWith("http") ? `${BACKEND_URL}${ch.logo}` : ch.logo
         })).slice(0, 5));
 
-      } catch (err) { 
-        console.error("Dashboard Overview fetch error", err); 
+      } catch (err) {
+        console.error("Dashboard Overview fetch error", err);
       } finally {
         setLoading(false);
       }
@@ -55,7 +55,7 @@ export default function DashboardOverview() {
   return (
     <div className="pro-module">
       <h2 className="card-title">System Overview</h2>
-      
+
       {/* 3 Stat Cards */}
       <div className="stats-grid">
         <div className="stat-card">
@@ -85,10 +85,10 @@ export default function DashboardOverview() {
 
       {/* Blue Gradient Welcome Banner */}
       <div className="welcome-banner">
-         <h3>Welcome to the Admin Command Center</h3>
-         <p>
-           From here you can manage your entire IPTV infrastructure. Use the sidebar to navigate between user directories and the channel catalog.
-         </p>
+        <h3>Welcome to the Admin Command Center</h3>
+        <p>
+          From here you can manage your entire IPTV infrastructure. Use the sidebar to navigate between user directories and the channel catalog.
+        </p>
       </div>
 
       {/* 2 Panels: Channel List + User List */}

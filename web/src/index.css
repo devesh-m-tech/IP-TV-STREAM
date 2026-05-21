@@ -6,11 +6,16 @@
 
 :root {
   /* Color Palette - Cyberpunk Black & Gold */
-  --bg-deep: #07080e;        /* Absolute cinematic pitch black */
-  --bg-panel: #0d0f1a;       /* Slate dark panel */
-  --bg-input: #171926;       /* High-contrast element fill */
-  --border-dim: #1e2238;     /* Tech-grade border */
-  --accent-gold: #f59e0b;    /* High-impact golden highlight */
+  --bg-deep: #07080e;
+  /* Absolute cinematic pitch black */
+  --bg-panel: #0d0f1a;
+  /* Slate dark panel */
+  --bg-input: #171926;
+  /* High-contrast element fill */
+  --border-dim: #1e2238;
+  /* Tech-grade border */
+  --accent-gold: #f59e0b;
+  /* High-impact golden highlight */
   --accent-gold-hover: #d97706;
   --text-light: #f8fafc;
   --text-dim: #94a3b8;
@@ -39,11 +44,23 @@ body {
 }
 
 /* Technical text, badges, clocks should use technical monospace */
-code, pre, .prime-badge-live, .prime-badge-locked, .control-badge-4k, .player-time {
+code,
+pre,
+.prime-badge-live,
+.prime-badge-locked,
+.control-badge-4k,
+.player-time {
   font-family: 'DM Mono', monospace !important;
 }
 
-h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .prime-nav-label {
+h1,
+h2,
+h3,
+h4,
+.prime-brand-text,
+.prime-upgrade-btn,
+.sidebar-group-title,
+.prime-nav-label {
   font-family: 'Poppins', sans-serif !important;
   font-weight: 700;
   letter-spacing: -0.01em;
@@ -68,7 +85,7 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   align-items: center;
   justify-content: space-between;
   z-index: 100;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
 .prime-brand {
@@ -83,7 +100,7 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   -webkit-background-clip: text;
   background-clip: text;
   -webkit-text-fill-color: transparent;
-  filter: drop-shadow(0 2px 10px rgba(245,158,11,0.3));
+  filter: drop-shadow(0 2px 10px rgba(245, 158, 11, 0.3));
 }
 
 .prime-brand-text {
@@ -239,7 +256,9 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   flex: 1;
 }
 
-.prime-nav-pills::-webkit-scrollbar { height: 0; }
+.prime-nav-pills::-webkit-scrollbar {
+  height: 0;
+}
 
 .prime-nav-pills button {
   white-space: nowrap;
@@ -317,7 +336,7 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   border-radius: var(--radius-lg);
   cursor: pointer;
   transition: all 0.2s ease;
-  background: rgba(255,255,255,0.02);
+  background: rgba(255, 255, 255, 0.02);
   border: 1px solid transparent;
 }
 
@@ -347,7 +366,7 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
 
 .prime-channel-avatar.premium {
   border-color: var(--accent-gold);
-  background: rgba(245,158,11,0.05);
+  background: rgba(245, 158, 11, 0.05);
 }
 
 .prime-channel-avatar img {
@@ -397,9 +416,17 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
 }
 
 @keyframes live-pulse {
-  0% { opacity: 0.6; }
-  50% { opacity: 1; }
-  100% { opacity: 0.6; }
+  0% {
+    opacity: 0.6;
+  }
+
+  50% {
+    opacity: 1;
+  }
+
+  100% {
+    opacity: 0.6;
+  }
 }
 
 /* Locked Premium Channels Badge */
@@ -469,7 +496,7 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
 
 .prime-badge-hd {
   font-size: 10px;
-  border: 1px solid rgba(255,255,255,0.15);
+  border: 1px solid rgba(255, 255, 255, 0.15);
   color: var(--text-dim);
   padding: 3px 8px;
   border-radius: 4px;
@@ -499,7 +526,8 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   border: 1px solid var(--border-dim);
 }
 
-.prime-video-el, .prime-player-embed {
+.prime-video-el,
+.prime-player-embed {
   position: absolute;
   top: 0;
   left: 0;
@@ -567,15 +595,20 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
 .prime-spinner {
   width: 40px;
   height: 40px;
-  border: 3px solid rgba(245,158,11,0.2);
+  border: 3px solid rgba(245, 158, 11, 0.2);
   border-bottom-color: var(--accent-gold);
   border-radius: 50%;
   animation: prime-spin 1s linear infinite;
 }
 
 @keyframes prime-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* ---------- 6. CINEMATIC OVERLAID INTERACTION ---------- */
@@ -585,7 +618,7 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   left: 0;
   width: 100%;
   height: 100%;
-  background: rgba(7,8,14,0.4);
+  background: rgba(7, 8, 14, 0.4);
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -632,7 +665,7 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   font-weight: 800;
   letter-spacing: 2px;
   color: var(--accent-gold);
-  text-shadow: 0 2px 10px rgba(0,0,0,0.8);
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8);
 }
 
 /* ---------- 7. CINEMATIC CONTROL BAR ---------- */
@@ -649,7 +682,9 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   box-shadow: var(--shadow-cinematic);
 }
 
-.controls-left, .controls-center, .controls-right {
+.controls-left,
+.controls-center,
+.controls-right {
   display: flex;
   align-items: center;
 }
@@ -774,15 +809,15 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   width: 96px;
   height: 96px;
   border-radius: 50%;
-  background: rgba(245,158,11,0.03);
-  border: 1px solid rgba(245,158,11,0.15);
+  background: rgba(245, 158, 11, 0.03);
+  border: 1px solid rgba(245, 158, 11, 0.15);
   color: var(--accent-gold);
   font-size: 40px;
   display: flex;
   align-items: center;
   justify-content: center;
   margin-bottom: 24px;
-  filter: drop-shadow(0 4px 20px rgba(245,158,11,0.1));
+  filter: drop-shadow(0 4px 20px rgba(245, 158, 11, 0.1));
 }
 
 .prime-empty-state h2 {
@@ -916,7 +951,7 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
 
 .tier-badge {
   font-size: 8px;
-  background: rgba(255,255,255,0.08);
+  background: rgba(255, 255, 255, 0.08);
   padding: 2px 4px;
   border-radius: 4px;
   font-weight: 800;
@@ -978,7 +1013,7 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   cursor: pointer;
   font-size: 12px;
   font-weight: 800;
-  box-shadow: 0 4px 15px rgba(245,158,11,0.2);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
 }
 
 .modal-btn-upgrade:disabled {
@@ -1076,13 +1111,13 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
   font-weight: 800;
   font-size: 14px;
   cursor: pointer;
-  box-shadow: 0 4px 15px rgba(245,158,11,0.2);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
   transition: all 0.2s;
 }
 
 .auth-btn:hover {
   transform: translateY(-1px);
-  box-shadow: 0 6px 20px rgba(245,158,11,0.4);
+  box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
 }
 
 .prime-btn-back {
@@ -1091,19 +1126,59 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
 
 /* ---------- 11. RESPONSIVENESS ---------- */
 @media (max-width: 992px) {
-  .prime-sidebar { width: 260px; }
-  .prime-search-wrapper { max-width: 260px; }
+  .prime-sidebar {
+    width: 260px;
+  }
+
+  .prime-search-wrapper {
+    max-width: 260px;
+  }
 }
 
 @media (max-width: 768px) {
-  .prime-header { padding: 12px 16px; flex-wrap: wrap; gap: 12px; }
-  .prime-search-wrapper { order: 3; max-width: 100%; }
-  .prime-main-layout { flex-direction: column-reverse; }
-  .prime-sidebar { width: 100%; height: 280px; border-right: none; border-bottom: 1px solid var(--border-dim); }
-  .prime-player-area { padding: 12px; }
-  .prime-video-container { min-height: auto; height: auto; aspect-ratio: 16 / 9; }
-  .prime-player-controls { flex-direction: column; gap: 12px; }
-  .controls-left, .controls-center, .controls-right { width: 100%; justify-content: center; }
+  .prime-header {
+    padding: 12px 16px;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  .prime-search-wrapper {
+    order: 3;
+    max-width: 100%;
+  }
+
+  .prime-main-layout {
+    flex-direction: column-reverse;
+  }
+
+  .prime-sidebar {
+    width: 100%;
+    height: 280px;
+    border-right: none;
+    border-bottom: 1px solid var(--border-dim);
+  }
+
+  .prime-player-area {
+    padding: 12px;
+  }
+
+  .prime-video-container {
+    min-height: auto;
+    height: auto;
+    aspect-ratio: 16 / 9;
+  }
+
+  .prime-player-controls {
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .controls-left,
+  .controls-center,
+  .controls-right {
+    width: 100%;
+    justify-content: center;
+  }
 
   /* Mobile Back Button */
   .prime-btn-back {
@@ -1122,6 +1197,7 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
     margin-right: auto;
     margin-bottom: 8px;
   }
+
   .prime-btn-back:hover {
     background: rgba(255, 255, 255, 0.15);
     color: var(--accent-gold);
@@ -1158,10 +1234,470 @@ h1, h2, h3, h4, .prime-brand-text, .prime-upgrade-btn, .sidebar-group-title, .pr
     align-items: flex-start;
     gap: 8px;
   }
+
   .prime-nav-label {
     width: 100%;
   }
+
   .prime-nav-pills {
     width: 100%;
   }
+}
+
+/* ==========================================
+   📺 12. SONY BRAVIA TV MODE STYLING 📺
+========================================== */
+.sony-tv-frame-outer {
+  width: 100%;
+  max-width: 1300px;
+  margin: 20px auto;
+  padding: 10px;
+  background: radial-gradient(circle, #252830 0%, #111317 100%);
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.8), inset 0 2px 5px rgba(255, 255, 255, 0.05);
+}
+
+.sony-tv-frame {
+  background: #101012;
+  border: 14px solid #1a1a1f;
+  border-radius: 12px;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+  position: relative;
+  overflow: hidden;
+}
+
+.tv-screen {
+  background: #050608;
+  color: #fff;
+  font-family: 'Inter', -apple-system, sans-serif;
+  padding: 15px;
+  box-sizing: border-box;
+}
+
+/* TV Header */
+.tv-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 2px solid rgba(255, 255, 255, 0.06);
+  padding-bottom: 10px;
+  margin-bottom: 12px;
+}
+
+.tv-title {
+  color: #f59e0b;
+  font-size: 20px;
+  font-weight: 800;
+  margin: 0;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.tv-datetime {
+  color: #f59e0b;
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+}
+
+/* TV Body Split Layout (50%-50%) */
+.tv-body {
+  display: flex;
+  width: 100%;
+  height: 520px;
+  gap: 10px;
+}
+
+/* Unified Left Pane: Contains Categories AND Channels side-by-side! */
+.tv-left-pane {
+  width: 54%;
+  display: flex;
+  flex-direction: column;
+  background: rgba(10, 11, 14, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.tv-left-pane-split {
+  display: flex;
+  flex: 1;
+  overflow: hidden;
+}
+
+/* Sidebar Categories List */
+.tv-sidebar-categories {
+  width: 44%;
+  padding: 12px 6px;
+  overflow-y: auto;
+  border-right: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.tv-category-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 12px;
+  margin-bottom: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  border: 3px solid transparent;
+  transition: all 0.2s ease;
+}
+
+.tv-category-item.active {
+  border: 3px solid #f59e0b !important;
+  background: rgba(245, 158, 11, 0.08);
+}
+
+.tv-category-name {
+  font-size: 12px;
+  font-weight: 800;
+  color: rgba(255, 255, 255, 0.95);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.tv-category-count {
+  font-size: 10px;
+  font-weight: 700;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 6px;
+  border-radius: 10px;
+  color: rgba(255, 255, 255, 0.6);
+}
+
+/* Channels List Column */
+.tv-channels-list {
+  width: 56%;
+  padding: 12px 6px;
+  overflow-y: auto;
+}
+
+.tv-channels-list-inner {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.tv-channel-row {
+  display: flex;
+  align-items: center;
+  padding: 8px 12px;
+  border-radius: 6px;
+  cursor: pointer;
+  background: rgba(255, 255, 255, 0.02);
+  transition: all 0.2s ease;
+}
+
+.tv-channel-row:hover {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.tv-channel-row.active {
+  background: linear-gradient(90deg, #f59e0b 0%, #b45309 100%) !important;
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.25);
+}
+
+.tv-channel-row.active .tv-channel-num,
+.tv-channel-row.active .tv-channel-title {
+  color: #000 !important;
+  font-weight: 800 !important;
+}
+
+.tv-channel-num {
+  width: 45px;
+  font-size: 13px;
+  font-weight: 800;
+  color: #f59e0b;
+  letter-spacing: 0.5px;
+}
+
+.tv-channel-title {
+  font-size: 12px;
+  font-weight: 700;
+  color: #fff;
+  letter-spacing: 0.3px;
+}
+
+.tv-no-channels {
+  padding: 20px;
+  text-align: center;
+  color: rgba(255, 255, 255, 0.4);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Bottom Playing Now Info Bar */
+.tv-playing-now-bar {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  background: rgba(0, 0, 0, 0.3);
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+  padding: 12px 16px;
+}
+
+.tv-play-icon {
+  color: #f59e0b;
+  font-size: 11px;
+}
+
+.tv-playing-text {
+  color: #f59e0b;
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+/* Right Section: Player & Ad */
+.tv-player-section {
+  width: 46%;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.tv-video-container {
+  flex: 1;
+  background: #000;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  position: relative;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+}
+
+.tv-video-el {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.tv-player-embed {
+  width: 100%;
+  height: 100%;
+  border: none;
+  display: none;
+}
+
+.tv-player-placeholder {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  gap: 12px;
+  color: rgba(255, 255, 255, 0.3);
+}
+
+.tv-placeholder-logo {
+  font-size: 40px;
+}
+
+.tv-player-placeholder p {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.tv-player-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 12px;
+  z-index: 10;
+  text-align: center;
+  padding: 20px;
+}
+
+.tv-spinner {
+  width: 32px;
+  height: 32px;
+  border: 3px solid rgba(245, 158, 11, 0.1);
+  border-top-color: #f59e0b;
+  border-radius: 50%;
+  animation: tv-spin 0.8s linear infinite;
+}
+
+@keyframes tv-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.tv-player-overlay p {
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.tv-retry-btn {
+  background: #f59e0b;
+  color: #000;
+  border: none;
+  padding: 6px 16px;
+  font-size: 11px;
+  font-weight: 800;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tv-retry-btn:hover {
+  background: #d97706;
+}
+
+/* Poorvika Ad Banner */
+.tv-ad-banner {
+  background: radial-gradient(circle, #fffaf0 0%, #ffeed0 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(245, 158, 11, 0.15);
+  padding: 10px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+}
+
+.tv-ad-logo {
+  display: flex;
+  flex-direction: column;
+}
+
+.ad-sponsor-label {
+  font-size: 8px;
+  font-weight: 800;
+  color: #8c8270;
+  letter-spacing: 0.3px;
+}
+
+.ad-brand-name {
+  font-size: 16px;
+  font-weight: 900;
+  color: #1e3a8a;
+  letter-spacing: 0.5px;
+  line-height: 1.1;
+}
+
+.ad-brand-sub {
+  font-size: 8px;
+  font-weight: 900;
+  color: #f59e0b;
+  letter-spacing: 1px;
+}
+
+.tv-ad-slogan {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.slogan-line1 {
+  font-size: 14px;
+  font-weight: 900;
+  color: #dc2626;
+  text-transform: uppercase;
+}
+
+.slogan-line2 {
+  font-size: 11px;
+  font-weight: 800;
+  color: #1e3a8a;
+}
+
+.tv-ad-icon {
+  font-size: 20px;
+}
+
+/* SONY Bezel Bevel Branding */
+.tv-frame-bottom {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: #1a1a1f;
+  padding: 8px 0;
+  border-top: 1px solid rgba(255, 255, 255, 0.04);
+}
+
+.tv-brand-logo-text {
+  color: #d1d5db;
+  font-size: 14px;
+  font-weight: 900;
+  letter-spacing: 4px;
+  opacity: 0.8;
+  text-shadow: 0 1px 2px rgba(0, 0, 0, 0.8);
+}
+
+/* Floating Controls Under TV Bezel */
+.tv-controls-floating {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding: 15px 0;
+  background: rgba(0, 0, 0, 0.4);
+  border-radius: 0 0 12px 12px;
+}
+
+.tv-toggle-mode-btn {
+  background: rgba(255, 255, 255, 0.08);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tv-toggle-mode-btn:hover {
+  background: rgba(255, 255, 255, 0.15);
+  color: #f59e0b;
+}
+
+.tv-upgrade-btn {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+  color: #000;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tv-upgrade-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 15px rgba(245, 158, 11, 0.4);
+}
+
+.tv-logout-btn {
+  background: rgba(239, 68, 68, 0.15);
+  color: #f87171;
+  border: 1px solid rgba(239, 68, 68, 0.3);
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.tv-logout-btn:hover {
+  background: #ef4444;
+  color: #fff;
 }

@@ -41,6 +41,101 @@ app.use("/api/channels", channelRoutes);
 app.use("/api/plans", planRoutes);
 app.use("/api/revenue", revenueRoutes);
 
+// ✅ HIGH-AVAILABILITY CORS-BYPASSING HLS & TS STREAM PROXY
+app.get("/api/stream-proxy", async (req, res) => {
+  const streamUrl = req.query.url;
+  if (!streamUrl) {
+    return res.status(400).send("url query parameter is required");
+  }
+
+  try {
+    const isM3u8 = streamUrl.toLowerCase().split('?')[0].endsWith(".m3u8") || streamUrl.toLowerCase().includes(".m3u8");
+    
+    const headers = {
+      "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
+    };
+    
+    try {
+      const parsedUrl = new URL(streamUrl);
+      headers["Origin"] = parsedUrl.origin;
+      headers["Referer"] = parsedUrl.origin + "/";
+    } catch (e) {
+      // ignore parsing error
+    }
+
+    const response = await fetch(streamUrl, {
+      method: "GET",
+      headers: headers
+    });
+
+    if (!response.ok) {
+      return res.status(response.status).send(`Failed to fetch stream: ${response.statusText}`);
+    }
+
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Access-Control-Allow-Headers", "*");
+    res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+
+    if (isM3u8) {
+      const playlistText = await response.text();
+      const baseUrl = streamUrl.substring(0, streamUrl.lastIndexOf("/") + 1);
+      
+      let domainUrl = "";
+      try {
+        domainUrl = new URL(streamUrl).origin;
+      } catch (e) {}
+
+      const lines = playlistText.split("\n");
+      const rewrittenLines = lines.map(line => {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed.startsWith("#")) {
+          return line;
+        }
+
+        let absoluteUrl = "";
+        if (trimmed.startsWith("http://") || trimmed.startsWith("https://")) {
+          absoluteUrl = trimmed;
+        } else if (trimmed.startsWith("/")) {
+          absoluteUrl = domainUrl + trimmed;
+        } else {
+          absoluteUrl = baseUrl + trimmed;
+        }
+
+        // Return rewritten path to route through this proxy
+        return `http://localhost:4000/api/stream-proxy?url=${encodeURIComponent(absoluteUrl)}`;
+      });
+
+      res.setHeader("Content-Type", "application/vnd.apple.mpegurl");
+      res.send(rewrittenLines.join("\n"));
+    } else {
+      // It's a segment (.ts) or other video chunk, pipe the body stream
+      res.setHeader("Content-Type", response.headers.get("content-type") || "video/MP2T");
+      
+      const body = response.body;
+      if (body) {
+        const reader = body.getReader();
+        const pump = async () => {
+          const { done, value } = await reader.read();
+          if (done) {
+            res.end();
+            return;
+          }
+          res.write(Buffer.from(value));
+          await pump();
+        };
+        await pump();
+      } else {
+        res.end();
+      }
+    }
+  } catch (err) {
+    console.error("Proxy error fetching:", streamUrl, err.message);
+    if (!res.headersSent) {
+      res.status(500).send("Error streaming resource: " + err.message);
+    }
+  }
+});
+
 
 // 404 handler for unknown routes
 app.use((req, res) => {

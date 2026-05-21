@@ -81,12 +81,35 @@ const UserDashboard = ({ onLogout }) => {
     };
   };
 
+  const normalizeStreamUrl = (url) => {
+    if (!url) return url;
+    let normalized = url;
+    
+    // Replace all occurrences of "/api/" in HLS/TS streams context with "/streams/"
+    if (normalized.includes("/api/") && (normalized.endsWith(".m3u8") || normalized.includes(".m3u8") || normalized.endsWith(".ts") || normalized.includes(".ts"))) {
+      normalized = normalized.replace("/api/", "/streams/");
+    }
+    
+    // Replace absolute ip-tv-stream.onrender.com/api/ with /streams/
+    if (normalized.includes("ip-tv-stream.onrender.com/api/")) {
+      normalized = normalized.replace("ip-tv-stream.onrender.com/api/", "ip-tv-stream.onrender.com/streams/");
+    }
+    
+    // Replace local api path with streams path
+    if (normalized.includes("localhost:4000/api/")) {
+      normalized = normalized.replace("localhost:4000/api/", "localhost:4000/streams/");
+    }
+    
+    return normalized;
+  };
+
   // Sync selected channel with active playing stream
   useEffect(() => {
     if (selectedChannel) {
+      const normalizedUrl = normalizeStreamUrl(selectedChannel.videoUrl);
       setActiveStream({
-        url: selectedChannel.videoUrl,
-        type: getVideoType(selectedChannel.videoUrl),
+        url: normalizedUrl,
+        type: getVideoType(normalizedUrl),
         isFallback: false,
         fallbackName: ""
       });
@@ -360,7 +383,7 @@ const UserDashboard = ({ onLogout }) => {
     const triggerFallback = () => {
       if (activeStream.isFallback) {
         setLoading(false);
-        setError("Failed to load stream. Please try again or check the source.");
+        setError("Stream currently unavailable");
         return;
       }
       

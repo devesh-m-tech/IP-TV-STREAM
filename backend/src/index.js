@@ -25,6 +25,23 @@ app.use(express.json());
 // ✅ Serve uploaded channel logos (images)
 app.use("/uploads", express.static(path.join(__dirname, "public", "uploads")));
 
+// ✅ Serve static streams from the streams/ directory at root and src level with CORS
+app.use("/streams", (req, res, next) => {
+  res.setHeader("Access-Control-Allow-Origin", "*");
+  res.setHeader("Access-Control-Allow-Headers", "*");
+  res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
+  next();
+}, express.static(path.join(__dirname, "..", "streams")), express.static(path.join(__dirname, "streams")));
+
+// ✅ Redirect misrouted HLS player requests from /api to /streams
+app.get("/api/:filename", (req, res, next) => {
+  const filename = req.params.filename;
+  if (filename.endsWith(".m3u8") || filename.endsWith(".ts")) {
+    return res.redirect(`/streams/${filename}`);
+  }
+  next();
+});
+
 // Root route for testing
 app.get("/", (req, res) => {
   res.send("✅ IPTV Backend is running");

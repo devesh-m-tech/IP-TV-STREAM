@@ -848,10 +848,18 @@ const UserDashboard = ({ onLogout }) => {
                             alt=""
                             onError={(e) => {
                               e.target.style.display = "none";
+                              if (e.target.nextSibling) {
+                                e.target.nextSibling.style.display = "flex";
+                              }
+                            }}
+                            onLoad={(e) => {
+                              if (e.target.nextSibling) {
+                                e.target.nextSibling.style.display = "none";
+                              }
                             }}
                           />
                         ) : null}
-                        <span className="avatar-fallback">{initials}</span>
+                        <span className="avatar-fallback" style={{ display: channel.logo ? "none" : "flex" }}>{initials}</span>
                       </div>
                       <div className="prime-channel-info">
                         <span className="channel-name">{channel.name}</span>

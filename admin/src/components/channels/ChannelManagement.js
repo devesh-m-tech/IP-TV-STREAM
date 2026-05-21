@@ -70,7 +70,19 @@ export default function ChannelManagement() {
       form.append("videoUrl", ch.videoUrl);
       form.append("language", ch.language);
       form.append("category", ch.category);
-      if (ch.newLogoFile) form.append("logoFile", ch.newLogoFile);
+      
+      if (ch.newLogoFile) {
+        form.append("logoFile", ch.newLogoFile);
+      } else {
+        let rawLogo = ch.logo || "";
+        if (rawLogo.startsWith("http")) {
+          // Check if it is a local upload mapped to BACKEND_URL, if so, strip BACKEND_URL prefix
+          if (rawLogo.startsWith(BACKEND_URL)) {
+            rawLogo = rawLogo.replace(BACKEND_URL, "");
+          }
+        }
+        form.append("logoUrl", ch.logoUrl !== undefined ? ch.logoUrl : rawLogo);
+      }
 
       await API.put(`/channels/${ch.id}`, form, {
         headers: { "Content-Type": "multipart/form-data" },
@@ -121,8 +133,18 @@ export default function ChannelManagement() {
             </select>
           </div>
           <div className="form-group">
-            <label>Logo Asset</label>
-            <input className="pro-input" type="file" accept="image/*" onChange={e => setLogoFile(e.target.files[0])} />
+            <label>Logo File (Local Upload)</label>
+            <input className="pro-input" type="file" accept="image/*" onChange={e => {
+              setLogoFile(e.target.files[0]);
+              if (e.target.files[0]) setLogoUrl(""); 
+            }} />
+          </div>
+          <div className="form-group">
+            <label>Logo URL (Web Link)</label>
+            <input className="pro-input" placeholder="e.g. https://.../logo.png" value={logoUrl} onChange={e => {
+              setLogoUrl(e.target.value);
+              if (e.target.value) setLogoFile(null);
+            }} />
           </div>
           <div className="form-group">
             <label>DRM ID</label>
@@ -218,8 +240,30 @@ export default function ChannelManagement() {
                 </div>
               </div>
               <div className="form-group">
-                <label>Change Logo Asset</label>
-                <input className="pro-input" type="file" accept="image/*" onChange={e => setEditModal({ ...editModal, channel: { ...editModal.channel, newLogoFile: e.target.files[0] } })} />
+                <label>Change Logo (Local Upload)</label>
+                <input className="pro-input" type="file" accept="image/*" onChange={e => {
+                  setEditModal({ 
+                    ...editModal, 
+                    channel: { 
+                      ...editModal.channel, 
+                      newLogoFile: e.target.files[0],
+                      logoUrl: e.target.files[0] ? "" : editModal.channel.logoUrl
+                    } 
+                  });
+                }} />
+              </div>
+              <div className="form-group">
+                <label>Change Logo URL (Web Link)</label>
+                <input className="pro-input" placeholder="e.g. https://.../logo.png" value={editModal.channel.logoUrl !== undefined ? editModal.channel.logoUrl : (editModal.channel.logo && editModal.channel.logo.startsWith("http") && !editModal.channel.logo.includes(BACKEND_URL) ? editModal.channel.logo : "")} onChange={e => {
+                  setEditModal({ 
+                    ...editModal, 
+                    channel: { 
+                      ...editModal.channel, 
+                      logoUrl: e.target.value,
+                      newLogoFile: e.target.value ? null : editModal.channel.newLogoFile
+                    } 
+                  });
+                }} />
               </div>
             </div>
             <div style={{ display: "flex", justifyContent: "flex-end", gap: "12px", marginTop: "32px" }}>

@@ -76,6 +76,12 @@ app.get("/api/stream-proxy", async (req, res) => {
     res.setHeader("Access-Control-Allow-Headers", "*");
     res.setHeader("Access-Control-Allow-Methods", "GET, HEAD, OPTIONS");
 
+    // Reassure full real-time backend connectivity by completely disabling browser and proxy caching
+    res.setHeader("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    res.setHeader("Pragma", "no-cache");
+    res.setHeader("Expires", "0");
+    res.setHeader("Surrogate-Control", "no-store");
+
     if (isM3u8) {
       const playlistText = await response.text();
       const baseUrl = streamUrl.substring(0, streamUrl.lastIndexOf("/") + 1);
@@ -84,6 +90,10 @@ app.get("/api/stream-proxy", async (req, res) => {
       try {
         domainUrl = new URL(streamUrl).origin;
       } catch (e) {}
+
+      // Resolve current hosting domain dynamically (localhost:4000 or production Render domain)
+      const host = req.headers.host || "localhost:4000";
+      const protocol = req.secure || req.headers["x-forwarded-proto"] === "https" ? "https" : "http";
 
       const lines = playlistText.split("\n");
       const rewrittenLines = lines.map(line => {
@@ -101,8 +111,8 @@ app.get("/api/stream-proxy", async (req, res) => {
           absoluteUrl = baseUrl + trimmed;
         }
 
-        // Return rewritten path to route through this proxy
-        return `http://localhost:4000/api/stream-proxy?url=${encodeURIComponent(absoluteUrl)}`;
+        // Return rewritten path to route dynamically through current active host proxy
+        return `${protocol}://${host}/api/stream-proxy?url=${encodeURIComponent(absoluteUrl)}`;
       });
 
       res.setHeader("Content-Type", "application/vnd.apple.mpegurl");

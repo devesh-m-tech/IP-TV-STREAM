@@ -310,9 +310,25 @@ const UserDashboard = ({ onLogout }) => {
         const normalized = (data || []).map((c) => {
           const logoRaw = c.logo ?? null;
           let logo = logoRaw;
-          if (typeof logoRaw === "string" && logoRaw.startsWith("/")) {
+          
+          const nameLower = (c.name || "").toLowerCase();
+          if (nameLower.includes("polimar") || nameLower.includes("polimer")) {
+            logo = "/logos/polimer.svg";
+          } else if (nameLower.includes("vijay")) {
+            logo = "/logos/vijay.svg";
+          } else if (nameLower.includes("sun")) {
+            logo = "/logos/sun.svg";
+          } else if (nameLower.includes("dd") || nameLower.includes("podhigai") || nameLower.includes("tamil")) {
+            // Check if it's DD Tamil specifically, otherwise map to DD logo
+            if (nameLower.includes("dd")) {
+              logo = "/logos/dd.svg";
+            }
+          } else if (nameLower.includes("puthiya") || nameLower.includes("thalaimurai") || nameLower.includes("puthiyathalamarai")) {
+            logo = "/logos/puthiya.svg";
+          } else if (typeof logoRaw === "string" && logoRaw.startsWith("/")) {
             logo = `${API_BASE.replace("/api", "")}${logoRaw}`;
           }
+
           return {
             id: c.id || c._id,
             name: c.name ?? "Untitled",

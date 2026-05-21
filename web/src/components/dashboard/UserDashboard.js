@@ -389,12 +389,8 @@ const UserDashboard = ({ onLogout }) => {
     }
 
     if (!url) {
-      if (!activeStream.isFallback) {
-        triggerFallback();
-      } else {
-        setLoading(false);
-        setError("Link Not Set Yet");
-      }
+      setLoading(false);
+      setError("Link Not Set Yet");
       return;
     }
 

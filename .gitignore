@@ -18,3 +18,8 @@ dist/
 .DS_Store
 Thumbs.db
 *.log
+
+# Ignore local scratch scripts and uploaded test media
+backend/scratch/
+backend/src/public/uploads/*
+!backend/src/public/uploads/.gitkeep

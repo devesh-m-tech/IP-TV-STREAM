@@ -688,19 +688,6 @@ const UserDashboard = ({ onLogout }) => {
                     )}
                   </div>
 
-                  {/* Simulated Poorvika Advertisement Banner */}
-                  <div className="tv-ad-banner">
-                    <div className="tv-ad-logo">
-                      <span className="ad-sponsor-label">SPONSORED BY</span>
-                      <span className="ad-brand-name">POORVIKA</span>
-                      <span className="ad-brand-sub">APPLIANCES</span>
-                    </div>
-                    <div className="tv-ad-slogan">
-                      <span className="slogan-line1">Think AC!</span>
-                      <span className="slogan-line2">Think Poorvika!</span>
-                    </div>
-                    <div className="tv-ad-icon">❄️⚡</div>
-                  </div>
                 </div>
               </div>
 

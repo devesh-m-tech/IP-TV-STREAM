@@ -317,6 +317,7 @@ const UserDashboard = ({ onLogout }) => {
         handleTvChannelSelect(defaultCh);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isTvMode, channels, selectedChannel, hasAutoSelectedCh]);
 
   const formatTvDateTime = (date) => {
@@ -652,8 +653,7 @@ const UserDashboard = ({ onLogout }) => {
       {/* 🚀 CINEMATIC SIDE NAVIGATION DOCK 🚀 */}
       <aside className="prime-side-dock">
         <div className="dock-brand">
-          <span className="dock-brand-icon">📺</span>
-          <span className="dock-brand-text">PRIME</span>
+          <img src="/logos/web.png" alt="Stream Prime" className="dock-brand-logo-img" />
         </div>
         
         <div className="dock-nav-group">

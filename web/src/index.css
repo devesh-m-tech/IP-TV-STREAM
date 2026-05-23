@@ -1561,16 +1561,64 @@ h4,
   background: #d97706;
 }
 
-/* Poorvika Ad Banner */
+/* Ad Banner */
 .tv-ad-banner {
   background: radial-gradient(circle, #fffaf0 0%, #ffeed0 100%);
   border-radius: 8px;
   border: 1px solid rgba(245, 158, 11, 0.15);
   padding: 10px 16px;
+  min-height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  gap: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+}
+
+/* Admin-uploaded ad image */
+.tv-ad-image {
+  height: 70px;
+  max-width: 160px;
+  object-fit: contain;
+  border-radius: 6px;
+  flex-shrink: 0;
+}
+
+/* Carousel fade transition */
+.tv-ad-carousel {
+  transition: opacity 0.4s ease;
+  position: relative;
+}
+.tv-ad-carousel.fading {
+  opacity: 0;
+}
+
+/* Dot indicators */
+.tv-ad-dots {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  position: absolute;
+  bottom: 8px;
+  right: 12px;
+}
+
+.tv-ad-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.25);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  flex-shrink: 0;
+}
+
+.tv-ad-dot.active {
+  background: #f59e0b;
+  width: 18px;
+  border-radius: 4px;
+  box-shadow: 0 0 6px rgba(245, 158, 11, 0.5);
 }
 
 .tv-ad-logo {

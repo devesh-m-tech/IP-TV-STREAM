@@ -1202,3 +1202,448 @@ h1, h2, h3, h4, .card-title, .brand-text b, .stat-info b, .welcome-banner h3, .p
     grid-template-columns: 1fr;
   }
 }
+
+/* ==========================================================================
+   AD MANAGEMENT STYLES
+   ========================================================================== */
+.ad-management {
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+.section-title {
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.section-subtitle {
+  font-size: 13px;
+  color: var(--text3);
+  margin-top: -18px;
+}
+
+.ad-form-card {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.ad-form-title {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--text);
+  margin-bottom: 16px;
+}
+
+.ad-error {
+  background: #fff1f2;
+  color: var(--danger);
+  border: 1px solid #fecaca;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}
+
+.ad-form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.ad-form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.ad-form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.ad-form-group label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text2);
+}
+
+.ad-form-group input[type="text"] {
+  height: 40px;
+  padding: 0 12px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  font-size: 13px;
+  color: var(--text);
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.ad-form-group input[type="text"]:focus {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+}
+
+.ad-form-group--check {
+  justify-content: flex-end;
+  padding-bottom: 4px;
+}
+
+.ad-form-group--check label {
+  display: flex;
+  align-items: center;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: none;
+  letter-spacing: 0;
+  color: var(--text2);
+  cursor: pointer;
+  gap: 6px;
+}
+
+/* Live Preview */
+.ad-preview {
+  border: 1px dashed var(--border);
+  border-radius: 10px;
+  padding: 14px;
+  background: var(--bg);
+}
+
+.ad-preview-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: var(--text3);
+  display: block;
+  margin-bottom: 10px;
+}
+
+.ad-preview-banner {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  background: linear-gradient(135deg, #fffaf0 0%, #ffeed0 100%);
+  border-radius: 8px;
+  padding: 12px 16px;
+  border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+.ad-preview-img {
+  height: 60px;
+  max-width: 140px;
+  object-fit: contain;
+  border-radius: 6px;
+}
+
+.ad-preview-text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.ad-preview-sponsor {
+  font-size: 9px;
+  font-weight: 700;
+  color: #8c8270;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ad-preview-title {
+  font-size: 18px;
+  font-weight: 900;
+  color: #1e3a8a;
+}
+
+.ad-preview-sub {
+  font-size: 9px;
+  font-weight: 700;
+  color: #f59e0b;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.ad-preview-slogan {
+  font-size: 12px;
+  font-weight: 700;
+  color: #dc2626;
+}
+
+.ad-save-btn {
+  background: var(--accent);
+  color: #fff;
+  border: none;
+  height: 42px;
+  padding: 0 24px;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 13px;
+  cursor: pointer;
+  align-self: flex-start;
+  transition: all 0.2s;
+}
+
+.ad-save-btn:hover { opacity: 0.9; transform: translateY(-1px); }
+.ad-save-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+/* Ad List */
+.ad-list-section {
+  background: var(--bg2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
+
+.ad-loading, .ad-empty {
+  padding: 24px;
+  text-align: center;
+  font-size: 13px;
+  color: var(--text3);
+}
+
+.ad-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 8px;
+}
+
+.ad-list-item {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 14px 16px;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  transition: all 0.2s;
+}
+
+.ad-list-item.active {
+  border-color: rgba(37, 99, 235, 0.3);
+  background: #f0f6ff;
+}
+
+.ad-list-item.inactive {
+  opacity: 0.6;
+}
+
+.ad-list-img {
+  height: 56px;
+  width: 100px;
+  object-fit: contain;
+  border-radius: 6px;
+  background: #fff;
+  border: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.ad-list-info {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.ad-list-title {
+  font-size: 14px;
+  font-weight: 800;
+  color: var(--text);
+}
+
+.ad-list-sub {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.ad-list-slogan {
+  font-size: 12px;
+  color: var(--text2);
+  font-style: italic;
+}
+
+.ad-list-status {
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 4px;
+}
+.ad-list-status.on { color: #16a34a; }
+.ad-list-status.off { color: var(--danger); }
+
+.ad-list-actions {
+  display: flex;
+  gap: 8px;
+  flex-shrink: 0;
+}
+
+.ad-toggle-btn {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 7px;
+  border: 1px solid var(--accent);
+  color: var(--accent);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ad-toggle-btn:hover { background: var(--bg3); }
+
+.ad-delete-btn {
+  height: 32px;
+  padding: 0 14px;
+  border-radius: 7px;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+  background: transparent;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+.ad-delete-btn:hover { background: #fff1f2; }
+
+/* ── Mode Tabs (Upload / URL) ── */
+.ad-mode-tabs {
+  display: flex;
+  gap: 0;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  overflow: hidden;
+  width: fit-content;
+}
+
+.ad-mode-tab {
+  padding: 8px 20px;
+  border: none;
+  background: var(--bg);
+  color: var(--text2);
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.ad-mode-tab:first-child { border-right: 1px solid var(--border); }
+
+.ad-mode-tab.active {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* ── Drag & Drop Zone ── */
+.ad-dropzone {
+  border: 2px dashed var(--border);
+  border-radius: 12px;
+  background: var(--bg);
+  padding: 32px 24px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  min-height: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.ad-dropzone:hover {
+  border-color: var(--accent);
+  background: #f0f6ff;
+}
+
+.ad-dropzone.has-image {
+  padding: 0;
+  border-style: solid;
+  border-color: var(--accent);
+}
+
+.ad-dropzone-placeholder {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  pointer-events: none;
+}
+
+.ad-dropzone-icon {
+  font-size: 36px;
+  line-height: 1;
+}
+
+.ad-dropzone-text {
+  font-size: 14px;
+  font-weight: 700;
+  color: var(--text2);
+}
+
+.ad-dropzone-hint {
+  font-size: 11px;
+  color: var(--text3);
+  font-weight: 600;
+}
+
+/* Image preview inside dropzone */
+.ad-dropzone-preview {
+  width: 100%;
+  height: 160px;
+  position: relative;
+}
+
+.ad-dropzone-img {
+  width: 100%;
+  height: 160px;
+  object-fit: contain;
+  display: block;
+  border-radius: 10px;
+  background: #f8f8f8;
+}
+
+.ad-dropzone-change {
+  position: absolute;
+  inset: 0;
+  background: rgba(37, 99, 235, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  transition: opacity 0.2s;
+  border-radius: 10px;
+}
+
+.ad-dropzone-preview:hover .ad-dropzone-change {
+  opacity: 1;
+}
+
+.ad-dropzone-change span {
+  color: #fff;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+/* Success message */
+.ad-success {
+  background: #f0fdf4;
+  color: #16a34a;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  padding: 10px 14px;
+  font-size: 13px;
+  font-weight: 600;
+  margin-bottom: 14px;
+}

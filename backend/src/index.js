@@ -11,10 +11,11 @@ dotenv.config();
 connectDB();
 
 const authRoutes = require("./routes/auth");
-const adminRoutes = require("./routes/admin"); // optional admin routes
+const adminRoutes = require("./routes/admin");
 const channelRoutes = require("./routes/channel");
 const planRoutes = require("./routes/plan");
 const revenueRoutes = require("./routes/revenue");
+const adRoutes = require("./routes/ad");
 
 const app = express();
 
@@ -57,6 +58,9 @@ app.use("/api/channels", channelRoutes);
 // ✅ PLANS & REVENUE API
 app.use("/api/plans", planRoutes);
 app.use("/api/revenue", revenueRoutes);
+
+// ✅ AD BANNERS API
+app.use("/api/ads", adRoutes);
 
 // ✅ HIGH-AVAILABILITY CORS-BYPASSING HLS & TS STREAM PROXY
 app.get("/api/stream-proxy", async (req, res) => {

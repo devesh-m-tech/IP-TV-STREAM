@@ -141,6 +141,33 @@ const UserDashboard = ({ onLogout }) => {
   });
   const [selectedTvCategory, setSelectedTvCategory] = useState("HD CHANNELS");
   const [hasAutoSelectedCh, setHasAutoSelectedCh] = useState(false);
+  const [activeAds, setActiveAds] = useState([]);   // up to 3 banners
+  const [adIndex, setAdIndex] = useState(0);         // current slide
+  const [adFading, setAdFading] = useState(false);   // fade trigger
+
+  // Fetch up to 3 active ad banners
+  useEffect(() => {
+    fetch(`${API_BASE}/ads/active`)
+      .then(r => r.json())
+      .then(data => {
+        const arr = Array.isArray(data) ? data : (data && data.imageUrl ? [data] : []);
+        setActiveAds(arr);
+      })
+      .catch(() => {});
+  }, []);
+
+  // Auto-rotate every 4 seconds when multiple banners
+  useEffect(() => {
+    if (activeAds.length <= 1) return;
+    const timer = setInterval(() => {
+      setAdFading(true);
+      setTimeout(() => {
+        setAdIndex(i => (i + 1) % activeAds.length);
+        setAdFading(false);
+      }, 400);
+    }, 4000);
+    return () => clearInterval(timer);
+  }, [activeAds]);
 
   const tvCategories = [
     "ALL CHANNELS",
@@ -793,6 +820,59 @@ const UserDashboard = ({ onLogout }) => {
                         <div className="tv-placeholder-logo">📺</div>
                         <p>SELECT A CHANNEL TO START STREAMING</p>
                       </div>
+                    )}
+                  </div>
+
+                  {/* 📢 Auto-Rotating Ad Banner Carousel (up to 3) */}
+                  <div className={`tv-ad-banner tv-ad-carousel ${adFading ? "fading" : ""}`} style={{ minHeight: "80px" }}>
+                    {activeAds.length > 0 ? (() => {
+                      const ad = activeAds[adIndex];
+                      return (
+                        <>
+                          <img
+                            src={ad.imageUrl}
+                            alt={ad.title}
+                            className="tv-ad-image"
+                            onError={e => e.target.style.display = 'none'}
+                          />
+                          <div className="tv-ad-logo">
+                            <span className="ad-sponsor-label">{ad.sponsorLabel || "SPONSORED BY"}</span>
+                            <span className="ad-brand-name">{ad.title}</span>
+                            {ad.subtitle && <span className="ad-brand-sub">{ad.subtitle}</span>}
+                          </div>
+                          {ad.slogan && (
+                            <div className="tv-ad-slogan">
+                              <span className="slogan-line1">{ad.slogan}</span>
+                            </div>
+                          )}
+                          {/* Dot indicators — only if more than 1 banner */}
+                          {activeAds.length > 1 && (
+                            <div className="tv-ad-dots">
+                              {activeAds.map((_, i) => (
+                                <span
+                                  key={i}
+                                  className={`tv-ad-dot ${i === adIndex ? "active" : ""}`}
+                                  onClick={() => { setAdFading(true); setTimeout(() => { setAdIndex(i); setAdFading(false); }, 400); }}
+                                />
+                              ))}
+                            </div>
+                          )}
+                        </>
+                      );
+                    })() : (
+                      // Default fallback Poorvika banner
+                      <>
+                        <div className="tv-ad-logo">
+                          <span className="ad-sponsor-label">SPONSORED BY</span>
+                          <span className="ad-brand-name">POORVIKA</span>
+                          <span className="ad-brand-sub">APPLIANCES</span>
+                        </div>
+                        <div className="tv-ad-slogan">
+                          <span className="slogan-line1">THINK AC!</span>
+                          <span className="slogan-line2">Think Poorvika!</span>
+                        </div>
+                        <div className="tv-ad-icon">❄️ ⚡</div>
+                      </>
                     )}
                   </div>
 

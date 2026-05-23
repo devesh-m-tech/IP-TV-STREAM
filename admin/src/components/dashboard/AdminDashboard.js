@@ -4,6 +4,7 @@ import ChannelManagement from "../channels/ChannelManagement";
 import PlanManagement from "../plans/PlanManagement";
 import RevenueManagement from "../revenue/RevenueManagement";
 import AnalyticsManagement from "../analytics/AnalyticsManagement";
+import AdManagement from "../ads/AdManagement";
 import DashboardOverview from "./DashboardOverview";
 import "../../index.css";
 
@@ -54,6 +55,9 @@ export default function AdminDashboard({ onLogout }) {
           <button className={`nav-item ${activeTab === "revenue" ? "active" : ""}`} onClick={() => setActiveTab("revenue")}>
             💵 Revenue Reports
           </button>
+          <button className={`nav-item ${activeTab === "ads" ? "active" : ""}`} onClick={() => setActiveTab("ads")}>
+            📢 Ad Banners
+          </button>
         </aside>
 
         <main className="main-content">
@@ -63,6 +67,7 @@ export default function AdminDashboard({ onLogout }) {
           {activeTab === "channels" && <ChannelManagement />}
           {activeTab === "plans" && <PlanManagement />}
           {activeTab === "revenue" && <RevenueManagement />}
+          {activeTab === "ads" && <AdManagement />}
         </main>
       </div>
 

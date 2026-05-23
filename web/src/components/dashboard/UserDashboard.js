@@ -136,9 +136,11 @@ const UserDashboard = ({ onLogout }) => {
 
   // TV Mode States & Helpers (Sony Bravia TV IPTV replica)
   const [isTvMode, setIsTvMode] = useState(() => {
-    return localStorage.getItem("isTvMode") === "true";
+    const saved = localStorage.getItem("isTvMode");
+    return saved !== null ? saved === "true" : true;
   });
   const [selectedTvCategory, setSelectedTvCategory] = useState("HD CHANNELS");
+  const [hasAutoSelectedCh, setHasAutoSelectedCh] = useState(false);
 
   const tvCategories = [
     "ALL CHANNELS",
@@ -280,13 +282,15 @@ const UserDashboard = ({ onLogout }) => {
   }, [isTvMode]);
 
   useEffect(() => {
-    if (isTvMode && !selectedChannel && channels.length > 0) {
+    const isMobile = window.innerWidth <= 768;
+    if (isTvMode && !selectedChannel && channels.length > 0 && !hasAutoSelectedCh && !isMobile) {
       const defaultCh = tvChannelDefinitions.find(c => c.name.includes("KTV")) || tvChannelDefinitions[0];
       if (defaultCh) {
+        setHasAutoSelectedCh(true);
         handleTvChannelSelect(defaultCh);
       }
     }
-  }, [isTvMode, channels, selectedChannel]);
+  }, [isTvMode, channels, selectedChannel, hasAutoSelectedCh]);
 
   const formatTvDateTime = (date) => {
     const months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
@@ -617,12 +621,63 @@ const UserDashboard = ({ onLogout }) => {
   };
 
   return (
-    <div className={`prime-root ${selectedChannel ? "has-active-channel" : ""} ${isTvMode ? "tv-mode-active" : ""}`}>
-      {isTvMode ? (
-        // 🚀 SPECTACULAR SONY BRAVIA IPTV TV FRAME & SCREEN 🚀
-        <div className="sony-tv-frame-outer">
-          <div className="sony-tv-frame">
-            <div className="tv-screen">
+    <div className={`prime-dashboard-container ${selectedChannel ? "has-active-channel" : ""} ${isTvMode ? "tv-layout-active" : "web-layout-active"}`}>
+      {/* 🚀 CINEMATIC SIDE NAVIGATION DOCK 🚀 */}
+      <aside className="prime-side-dock">
+        <div className="dock-brand">
+          <span className="dock-brand-icon">📺</span>
+          <span className="dock-brand-text">PRIME</span>
+        </div>
+        
+        <div className="dock-nav-group">
+          <button 
+            className={`dock-btn ${isTvMode ? "active" : ""}`}
+            onClick={() => {
+              setIsTvMode(true);
+              const hdChs = getChannelsForTvCategory("HD CHANNELS");
+              if (hdChs.length > 0) {
+                handleTvChannelSelect(hdChs[0]);
+              }
+            }}
+            title="TV Mode"
+          >
+            <span className="dock-btn-icon">📺</span>
+            <span className="dock-btn-label">TV Mode</span>
+          </button>
+          
+        </div>
+
+        <div className="dock-actions-group">
+          <button 
+            className="dock-btn upgrade" 
+            onClick={() => setShowUpgradeModal(true)}
+            title="Upgrade to Pro"
+          >
+            <span className="dock-btn-icon">⭐</span>
+            <span className="dock-btn-label">Upgrade</span>
+          </button>
+          
+          <button 
+            className="dock-btn logout" 
+            onClick={() => {
+              localStorage.removeItem("token");
+              onLogout();
+            }}
+            title="Logout"
+          >
+            <span className="dock-btn-icon">🚪</span>
+            <span className="dock-btn-label">Logout</span>
+          </button>
+        </div>
+      </aside>
+
+      {/* 🚀 MAIN CONTENT VIEW WINDOW 🚀 */}
+      <div className="prime-main-content">
+        {isTvMode ? (
+          // 🚀 SPECTACULAR SONY BRAVIA IPTV TV FRAME & SCREEN 🚀
+          <div className="sony-tv-frame-outer">
+            <div className="sony-tv-frame">
+              <div className="tv-screen">
               {/* TV Header */}
               <div className="tv-header">
                 <h1 className="tv-title">Channel List</h1>
@@ -693,6 +748,20 @@ const UserDashboard = ({ onLogout }) => {
 
                 {/* Right Column: Player Area & Banner Ad */}
                 <div className="tv-player-section">
+                  {selectedChannel && (
+                    <div className="tv-mobile-player-header">
+                      <button 
+                        className="tv-mobile-back-btn"
+                        onClick={() => setSelectedChannel(null)}
+                      >
+                        ← Back to Channels
+                      </button>
+                      <span className="tv-mobile-channel-name">
+                        {selectedChannel.name.toUpperCase()}
+                      </span>
+                      <span className="tv-mobile-live-badge">LIVE</span>
+                    </div>
+                  )}
                   <div className="tv-video-container" onDoubleClick={handleDoubleClick}>
                     {selectedChannel ? (
                       <>
@@ -754,7 +823,7 @@ const UserDashboard = ({ onLogout }) => {
           </div>
         </div>
       ) : (
-        <>
+        <div className="prime-root">
       {/* 🚀 1. GILDED HEADER */}
       <header className="prime-header">
         <div className="prime-brand">
@@ -1183,8 +1252,9 @@ const UserDashboard = ({ onLogout }) => {
           {time.toLocaleDateString()} {time.toLocaleTimeString()}
         </span>
       </footer>
-        </>
-      )}
+          </div>
+        )}
+      </div>
     </div>
   );
 };

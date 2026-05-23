@@ -675,14 +675,7 @@ const UserDashboard = ({ onLogout }) => {
         </div>
 
         <div className="dock-actions-group">
-          <button 
-            className="dock-btn upgrade" 
-            onClick={() => setShowUpgradeModal(true)}
-            title="Upgrade to Pro"
-          >
-            <span className="dock-btn-icon">⭐</span>
-            <span className="dock-btn-label">Upgrade</span>
-          </button>
+
           
           <button 
             className="dock-btn logout" 

@@ -1163,9 +1163,10 @@ h4,
   }
 
   .prime-video-container {
-    min-height: auto;
-    height: auto;
-    aspect-ratio: 16 / 9;
+    min-height: 250px;
+    height: 100%;
+    flex: 1;
+    aspect-ratio: auto;
   }
 
   .prime-player-controls {
@@ -1182,20 +1183,7 @@ h4,
 
   /* Mobile Back Button */
   .prime-btn-back {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 8px 16px;
-    background: rgba(255, 255, 255, 0.08);
-    color: var(--text-light);
-    border: 1px solid var(--border-dim);
-    border-radius: var(--radius-md);
-    font-size: 13px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    margin-right: auto;
-    margin-bottom: 8px;
+    display: none !important;
   }
 
   .prime-btn-back:hover {
@@ -1214,17 +1202,24 @@ h4,
   .has-active-channel .prime-header,
   .has-active-channel .prime-search-wrapper,
   .has-active-channel .prime-nav-section,
-  .has-active-channel .prime-sidebar,
   .has-active-channel .prime-footer {
     display: none !important;
   }
 
   .has-active-channel .prime-player-area {
-    padding: 16px 12px;
+    padding: 16px 12px 8px 12px;
     display: flex;
     flex-direction: column;
-    justify-content: center;
-    min-height: 92vh;
+    justify-content: flex-start;
+    flex: 1.5; /* Take more height */
+    height: auto;
+  }
+  
+  .has-active-channel .prime-sidebar {
+    height: auto !important;
+    flex: 1; /* Take less height */
+    max-height: 35vh; /* Limit the channel list height */
+    display: flex !important;
   }
 }
 
@@ -2058,9 +2053,9 @@ h4,
 
   .tv-layout-active .tv-body {
     display: flex !important;
-    flex-direction: column !important;
+    flex-direction: column-reverse !important;
     height: calc(100% - 45px) !important; /* Deduct header height */
-    gap: 0 !important;
+    gap: 10px !important;
   }
 
   /* 📲 TV Mode Step-by-Step Focus View on Mobile */
@@ -2074,14 +2069,19 @@ h4,
     height: 100% !important;
   }
 
-  /* If a channel IS playing: show player, hide channel list */
+  /* If a channel IS playing: show both player (top) and channel list (bottom) */
   .tv-layout-active.has-active-channel .tv-left-pane {
-    display: none !important;
+    width: 100% !important;
+    flex: 1 !important;
+    height: auto !important;
+    display: flex !important;
+    flex-direction: column !important;
   }
 
   .tv-layout-active.has-active-channel .tv-player-section {
     width: 100% !important;
-    height: 100% !important;
+    height: auto !important;
+    flex-shrink: 0 !important;
     display: flex !important;
     flex-direction: column !important;
   }
@@ -2095,29 +2095,22 @@ h4,
     box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5) !important;
   }
 
-  /* Sleek Back Navigation Header on Mobile Player */
+  /* Sleek Back Navigation Header on Mobile Player - HIDING the back button per user request */
   .tv-mobile-player-header {
     display: flex !important;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center; /* Center the remaining items since back button is hidden */
     background: rgba(9, 10, 16, 0.95);
     border: 1px solid rgba(255, 255, 255, 0.05);
     border-radius: 8px;
-    padding: 10px 14px;
+    padding: 6px 14px;
     margin-bottom: 8px;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.4);
+    gap: 8px;
   }
 
   .tv-mobile-back-btn {
-    background: rgba(255, 255, 255, 0.06);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    color: #fff;
-    font-size: 11px;
-    font-weight: 700;
-    padding: 6px 12px;
-    border-radius: 6px;
-    cursor: pointer;
-    transition: all 0.2s ease;
+    display: none !important; /* Hidden as user doesn't want to go back */
   }
 
   .tv-mobile-back-btn:hover {

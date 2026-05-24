@@ -1,0 +1,6 @@
+{
+  "files.associations": {
+    "**/streams/**/*.ts": "plaintext",
+    "**/streams/*.ts": "plaintext"
+  }
+}

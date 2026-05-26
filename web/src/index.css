@@ -1905,8 +1905,6 @@ h4,
 .tv-layout-active .sony-tv-frame {
   flex: 1;
   border: 12px solid #1a1a24;
-  border-left: none; /* Absolute full bleed edge-to-edge on sides */
-  border-right: none;
   border-radius: 0;
   display: flex;
   flex-direction: column;
@@ -1924,8 +1922,8 @@ h4,
 }
 
 .tv-layout-active .tv-body {
-  flex: 1;
-  height: calc(100vh - 140px) !important;
+  flex: 1 !important;
+  height: 0 !important;
   display: grid;
   grid-template-columns: 38% 62%;
   gap: 12px;
@@ -2041,8 +2039,8 @@ h4,
   }
 
   .tv-layout-active .sony-tv-frame {
-    border: none !important;
-    border-radius: 0 !important;
+    border: 6px solid #1a1a24 !important;
+    border-radius: 8px !important;
     height: 100% !important;
   }
 
@@ -2054,7 +2052,8 @@ h4,
   .tv-layout-active .tv-body {
     display: flex !important;
     flex-direction: column-reverse !important;
-    height: calc(100% - 45px) !important; /* Deduct header height */
+    flex: 1 !important;
+    height: 0 !important;
     gap: 10px !important;
   }
 
@@ -2176,5 +2175,145 @@ h4,
 
   .tv-channel-title {
     font-size: 10px !important;
+  }
+}
+
+/* ==========================================
+   📱 15. MOBILE LANDSCAPE TV MODE OVERRIDES 📱
+========================================== */
+@media (max-width: 950px) and (orientation: landscape) {
+  .tv-layout-active .tv-body {
+    display: grid !important;
+    grid-template-columns: 28% 72% !important; /* TV Screen is now much bigger! (72% width) */
+    flex-direction: row !important;
+    height: 0 !important;
+    flex: 1 !important;
+    gap: 8px !important;
+  }
+
+  .tv-layout-active.has-active-channel .tv-left-pane {
+    width: 100% !important;
+    height: 100% !important;
+    flex: 1 !important;
+    display: flex !important;
+  }
+
+  .tv-layout-active.has-active-channel .tv-player-section {
+    width: 100% !important;
+    height: 100% !important;
+    flex: 1 !important;
+    display: flex !important;
+  }
+
+  /* Left Pane Categories horizontal stacking */
+  .tv-layout-active .tv-left-pane-split {
+    flex-direction: column !important;
+  }
+
+  .tv-layout-active .tv-sidebar-categories {
+    width: 100% !important;
+    flex: none !important;
+    display: flex !important;
+    flex-direction: row !important;
+    overflow-x: auto !important;
+    padding: 6px 4px !important;
+    border-right: none !important;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+    scrollbar-width: none !important; /* Hide standard scrollbar */
+  }
+
+  .tv-layout-active .tv-sidebar-categories::-webkit-scrollbar {
+    display: none !important; /* Hide Chrome scrollbar */
+  }
+
+  .tv-layout-active .tv-category-item {
+    display: inline-flex !important;
+    align-items: center !important;
+    white-space: nowrap !important;
+    margin-right: 6px !important;
+    margin-bottom: 0 !important;
+    padding: 4px 10px !important;
+  }
+
+  .tv-layout-active .tv-category-name {
+    font-size: 8.5px !important;
+  }
+
+  .tv-layout-active .tv-category-count {
+    font-size: 8px !important;
+    margin-left: 4px !important;
+    padding: 1px 4px !important;
+  }
+
+  .tv-layout-active .tv-channels-list {
+    flex: 1 !important;
+    width: 100% !important;
+    padding: 4px 2px !important;
+    overflow-y: auto !important;
+  }
+
+  /* TV Video Container Auto Scaling */
+  .tv-layout-active .tv-video-container {
+    width: auto !important;
+    max-width: 100% !important;
+    height: 0 !important;
+    flex: 1 !important;
+    aspect-ratio: 16 / 9 !important;
+    margin: 0 auto !important;
+  }
+
+  /* Compact Ad Banner on Landscape */
+  .tv-layout-active .tv-ad-banner {
+    min-height: 55px !important;
+    height: 55px !important;
+    padding: 4px 12px !important;
+    gap: 8px !important;
+  }
+
+  .tv-layout-active .tv-ad-image {
+    height: 45px !important;
+    max-width: 110px !important;
+  }
+
+  .tv-layout-active .ad-sponsor-label {
+    font-size: 7px !important;
+  }
+
+  .tv-layout-active .ad-brand-name {
+    font-size: 11px !important;
+  }
+
+  .tv-layout-active .ad-brand-sub {
+    font-size: 7px !important;
+  }
+
+  .tv-layout-active .tv-ad-slogan {
+    display: flex !important;
+    flex-direction: column !important;
+  }
+
+  .tv-layout-active .slogan-line1 {
+    font-size: 10px !important;
+  }
+
+  .tv-layout-active .slogan-line2 {
+    font-size: 8px !important;
+  }
+
+  .tv-layout-active .tv-ad-icon {
+    font-size: 14px !important;
+  }
+
+  .tv-layout-active .tv-channel-row {
+    padding: 5px 6px !important;
+  }
+
+  .tv-layout-active .tv-channel-num {
+    width: 25px !important;
+    font-size: 10px !important;
+  }
+
+  .tv-layout-active .tv-channel-title {
+    font-size: 9.5px !important;
   }
 }

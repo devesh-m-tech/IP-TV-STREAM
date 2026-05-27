@@ -6,6 +6,7 @@ dotenv.config();
 const User = require("./User");
 const Plan = require("./Plan");
 const Transaction = require("./Transaction");
+const Language = require("./Language");
 const bcrypt = require("bcrypt");
 
 const connectDB = async () => {
@@ -16,6 +17,7 @@ const connectDB = async () => {
     await seedUser();
     await seedPlans();
     await seedTransactions();
+    await seedLanguages();
   } catch (err) {
     console.error("❌ MongoDB connection failed:", err.message);
     process.exit(1);
@@ -115,6 +117,26 @@ const seedTransactions = async () => {
     }
   } catch (err) {
     console.error("❌ Error seeding transactions:", err.message);
+  }
+};
+
+const seedLanguages = async () => {
+  try {
+    const langExist = await Language.findOne();
+    if (!langExist) {
+      const defaultLanguages = [
+        { name: "Tamil" },
+        { name: "Telugu" },
+        { name: "Malayalam" },
+        { name: "English" },
+        { name: "Kannada" },
+        { name: "Hindi" }
+      ];
+      await Language.insertMany(defaultLanguages);
+      console.log("🌐 Seeded default languages in MongoDB");
+    }
+  } catch (err) {
+    console.error("❌ Error seeding languages:", err.message);
   }
 };
 

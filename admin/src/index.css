@@ -1,27 +1,27 @@
-/* IPTV Admin Dashboard - Premium Poppins Modern Theme */
-@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&family=Montserrat:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@500;600&display=swap');
+/* IPTV Admin Dashboard - Premium Soft Blue Corporate Theme */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Outfit:wght@300;400;500;600;700;800;900&family=DM+Mono:wght@500;600&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&display=swap');
 
 :root {
-  --bg: #f0f6ff;
-  --bg2: #fff;
-  --bg3: #e8f1fc;
-  --border: #ccddf5;
-  --accent: #2563eb;
-  --text: #0f2147;
-  --text2: #3a5580;
-  --text3: #7a9cbf;
+  --bg: #f4f8ff;        /* Soft Ice-Blue Corporate background */
+  --bg2: #ffffff;       /* Pure White clean panels */
+  --bg3: #e0edff;       /* Soft blue highlight for hover/clocks */
+  --border: #d8e6f8;    /* Corporate Blue-Grey light border lines */
+  --accent: #1e40af;    /* Premium Deep Royal Blue accents */
+  --text: #0f2557;      /* Rich Corporate Navy Dark Text */
+  --text2: #35508c;     /* Steel Blue body subtext */
+  --text3: #8da6d4;     /* Muted blue placeholder and icons */
   --danger: #ef4444;
-  --radius: 12px;
-  --shadow: 0 4px 6px -1px rgba(15, 33, 71, 0.05), 0 2px 4px -1px rgba(15, 33, 71, 0.03);
+  --radius: 10px;
+  --shadow: 0 4px 12px rgba(15, 37, 87, 0.03), 0 1px 2px rgba(15, 37, 87, 0.05);
 }
 
-/* Premium Global Font Overrides */
+/* Premium Corporate Global Font Overrides */
 * {
   box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Montserrat', sans-serif !important;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif !important;
 }
 
 body {
@@ -32,10 +32,10 @@ body {
 }
 
 h1, h2, h3, h4, .card-title, .brand-text b, .stat-info b, .welcome-banner h3, .panel-header h4, .pro-modal h3, .ott-brand-title, .ott-brand-subtitle, .ott-label {
-  font-family: 'Poppins', sans-serif !important;
+  font-family: 'Outfit', sans-serif !important;
   font-weight: 700;
   color: var(--text);
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
 }
 
 /* Technical Monospace Overrides */
@@ -158,7 +158,8 @@ h1, h2, h3, h4, .card-title, .brand-text b, .stat-info b, .welcome-banner h3, .p
 
 .sidebar {
   width: 220px;
-  background: var(--accent);
+  background: var(--bg2);
+  border-right: 1px solid var(--border);
   padding: 20px 12px;
   display: flex;
   flex-direction: column;
@@ -172,9 +173,8 @@ h1, h2, h3, h4, .card-title, .brand-text b, .stat-info b, .welcome-banner h3, .p
   background: transparent;
   text-align: left;
   font-size: 13px;
-  font-weight: 700;
-  font-family: 'Syne', sans-serif;
-  color: rgba(255, 255, 255, 0.85);
+  font-weight: 600;
+  color: var(--text2);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -183,14 +183,15 @@ h1, h2, h3, h4, .card-title, .brand-text b, .stat-info b, .welcome-banner h3, .p
 }
 
 .nav-item:hover {
-  background: rgba(255, 255, 255, 0.1);
-  color: #fff;
+  background: var(--bg3);
+  color: var(--accent);
 }
 
 .nav-item.active {
-  background: var(--bg2);
+  background: var(--bg3);
   color: var(--accent);
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  font-weight: 700;
+  box-shadow: none;
 }
 
 .main-content {

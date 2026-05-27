@@ -7,6 +7,7 @@ const channelSchema = new mongoose.Schema({
   category: { type: String, required: true },
   videoUrl: { type: String, required: true },
   drm: { type: String, default: "CLEARKEY" },
+  status: { type: String, default: "Active" },
   createdAt: { type: Date, default: Date.now },
 });
 

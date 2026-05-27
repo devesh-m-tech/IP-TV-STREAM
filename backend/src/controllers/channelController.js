@@ -31,7 +31,7 @@ exports.getChannel = async (req, res) => {
 };
 
 exports.createChannel = async (req, res) => {
-  const { name, videoUrl, language, category, drm, logoUrl } = req.body;
+  const { name, videoUrl, language, category, drm, logoUrl, status } = req.body;
   const logoPath = req.file ? `/uploads/${req.file.filename}` : (logoUrl || null);
 
   if (!name || !videoUrl || !language || !category) {
@@ -45,7 +45,8 @@ exports.createChannel = async (req, res) => {
       logo: logoPath,
       language,
       category,
-      drm: drm || "CLEARKEY"
+      drm: drm || "CLEARKEY",
+      status: status || "Active"
     });
     await channel.save();
     res.json({ message: "Channel created", id: channel._id });
@@ -56,7 +57,7 @@ exports.createChannel = async (req, res) => {
 
 exports.updateChannel = async (req, res) => {
   const { id } = req.params;
-  const { name, videoUrl, language, category, drm, logoUrl } = req.body;
+  const { name, videoUrl, language, category, drm, logoUrl, status } = req.body;
   const file = req.file;
 
   try {
@@ -68,6 +69,7 @@ exports.updateChannel = async (req, res) => {
     if (language !== undefined) channel.language = language;
     if (category !== undefined) channel.category = category;
     if (drm !== undefined) channel.drm = drm;
+    if (status !== undefined) channel.status = status;
 
     if (file) {
       if (channel.logo && channel.logo.startsWith("/uploads/")) {

@@ -1452,7 +1452,7 @@ h4,
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 12px;
+  gap: 20px;
 }
 
 .tv-video-container {
@@ -1569,6 +1569,8 @@ h4,
   gap: 12px;
   box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
   overflow: hidden;
+  flex-shrink: 0 !important;
+  margin-bottom: 8px;
 }
 
 /* Admin-uploaded ad image */
@@ -1914,7 +1916,7 @@ h4,
 
 .tv-layout-active .tv-screen {
   flex: 1;
-  padding: 10px 12px;
+  padding: 10px 12px 25px 12px !important;
   display: flex;
   flex-direction: column;
   height: 100%;
@@ -2315,5 +2317,104 @@ h4,
 
   .tv-layout-active .tv-channel-title {
     font-size: 9.5px !important;
+  }
+}
+
+/* ==========================================
+   🌐 CUSTOM FULLSCREEN DESKTOP & MOBILE RESPONSIVE TV SCREEN OVERRIDES 🌐
+========================================== */
+
+/* 1. Desktop Mode (Default / Large screens) */
+.prime-dashboard-container {
+  padding-left: 0 !important;
+}
+
+.prime-main-content {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding: 0 45px 0 0 !important; /* Premium right-side desktop spacing */
+  box-sizing: border-box !important;
+}
+
+.sony-tv-frame-outer {
+  width: 100% !important;
+  max-width: 100% !important;
+  padding-right: 25px !important; /* Premium right-side spacing inside frame */
+  box-sizing: border-box !important;
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.sony-tv-frame {
+  border: none !important;
+  border-radius: 0 !important;
+}
+
+.tv-screen {
+  border-radius: 0 !important;
+}
+
+/* 2. Responsive Mobile Mode (Landscape & Portrait) */
+@media (max-width: 768px) {
+  .prime-main-content {
+    padding: 0 12px !important; /* Perfect even spacing on both sides for mobile */
+  }
+
+  .sony-tv-frame-outer {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .sony-tv-frame {
+    border: 4px solid #1a1a24 !important;
+    border-radius: 8px !important;
+  }
+
+  /* 📲 Flexible Mobile Ad Sizing to prevent any cut off on small portrait screens */
+  .tv-layout-active .tv-ad-banner {
+    min-height: unset !important;
+    height: auto !important;
+    padding: 6px 10px !important;
+    gap: 8px !important;
+  }
+
+  .tv-layout-active .tv-ad-image {
+    height: 38px !important;
+    max-width: 85px !important;
+    border-radius: 4px !important;
+  }
+
+  .tv-layout-active .ad-sponsor-label {
+    font-size: 6px !important;
+  }
+
+  .tv-layout-active .ad-brand-name {
+    font-size: 10px !important;
+  }
+
+  .tv-layout-active .ad-brand-sub {
+    font-size: 6px !important;
+  }
+
+  .tv-layout-active .slogan-line1 {
+    font-size: 9px !important;
+  }
+
+  .tv-layout-active .slogan-line2 {
+    font-size: 7.5px !important;
+  }
+
+  .tv-layout-active .tv-ad-icon {
+    display: none !important; /* Hide icon on mobile view to avoid clipping */
+  }
+}
+
+@media (max-width: 950px) and (orientation: landscape) {
+  .prime-main-content {
+    padding: 0 16px !important; /* Beautiful spacing on mobile landscape */
+  }
+
+  .sony-tv-frame-outer {
+    padding: 0 !important;
   }
 }

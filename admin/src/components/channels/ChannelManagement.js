@@ -2,7 +2,6 @@ import React, { useEffect, useState } from "react";
 import API from "../../utils/api";
 import "../../index.css";
 
-const LANGUAGES = ["Tamil","English","Hindi","Telugu","Malayalam","Kannada","Bengali"];
 const CATEGORIES = ["Entertainment","Movies","Sports","News","Kids","Music","Lifestyle"];
 const BACKEND_URL = window.location.hostname === "localhost"
   ? "http://localhost:4000"
@@ -10,15 +9,17 @@ const BACKEND_URL = window.location.hostname === "localhost"
 
 export default function ChannelManagement() {
   const [channels, setChannels] = useState([]);
+  const [languages, setLanguages] = useState([]);
   const [loading, setLoading] = useState(false);
 
   const [name, setName] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
   const [logoFile, setLogoFile] = useState(null);
-  const [language, setLanguage] = useState(LANGUAGES[0]);
+  const [language, setLanguage] = useState("");
   const [category, setCategory] = useState(CATEGORIES[0]);
   const [drm, setDrm] = useState("");
+  const [status, setStatus] = useState("Active");
 
   const [editModal, setEditModal] = useState({ open: false, channel: null });
   const [deleteModal, setDeleteModal] = useState({ open: false, channel: null });
@@ -37,7 +38,39 @@ export default function ChannelManagement() {
     finally { setLoading(false); }
   };
 
-  useEffect(() => { fetchChannels(); }, []);
+  const fetchLanguages = async () => {
+    try {
+      const res = await API.get("/languages");
+      setLanguages(res.data);
+      if (res.data.length > 0) {
+        setLanguage(res.data[0].name);
+      }
+    } catch (err) {
+      console.error("Failed to load dynamic languages catalog");
+    }
+  };
+
+  useEffect(() => {
+    fetchChannels();
+    fetchLanguages();
+  }, []);
+
+  const toggleChannelStatus = async (id, newStatus) => {
+    setChannels(prev => prev.map(ch => {
+      const chId = ch.id || ch._id;
+      if (chId === id) {
+        return { ...ch, status: newStatus };
+      }
+      return ch;
+    }));
+
+    try {
+      await API.put(`/channels/${id}`, { status: newStatus });
+    } catch (err) {
+      alert("Failed to update status");
+      fetchChannels();
+    }
+  };
 
   const filteredChannels = channels.filter(ch => 
     ch.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -53,11 +86,12 @@ export default function ChannelManagement() {
       form.append("language", language);
       form.append("category", category);
       form.append("drm", drm || "");
+      form.append("status", status);
       if (logoFile) form.append("logoFile", logoFile);
       else form.append("logoUrl", logoUrl || "");
 
       await API.post("/channels", form, { headers: { "Content-Type": "multipart/form-data" } });
-      setName(""); setVideoUrl(""); setLogoUrl(""); setLogoFile(null); setDrm(""); fetchChannels();
+      setName(""); setVideoUrl(""); setLogoUrl(""); setLogoFile(null); setDrm(""); setStatus("Active"); fetchChannels();
       alert("✅ Channel published");
     } catch (err) { alert("Publishing failed"); }
   };
@@ -70,6 +104,7 @@ export default function ChannelManagement() {
       form.append("videoUrl", ch.videoUrl);
       form.append("language", ch.language);
       form.append("category", ch.category);
+      form.append("status", ch.status || "Active");
       
       if (ch.newLogoFile) {
         form.append("logoFile", ch.newLogoFile);
@@ -123,7 +158,7 @@ export default function ChannelManagement() {
           <div className="form-group">
             <label>Language</label>
             <select className="pro-select" value={language} onChange={e => setLanguage(e.target.value)}>
-              {LANGUAGES.map(l => <option key={l} value={l}>{l}</option>)}
+              {languages.map(l => <option key={l.id || l.name} value={l.name}>{l.name}</option>)}
             </select>
           </div>
           <div className="form-group">
@@ -150,6 +185,13 @@ export default function ChannelManagement() {
             <label>DRM ID</label>
             <input className="pro-input" placeholder="Optional" value={drm} onChange={e => setDrm(e.target.value)} />
           </div>
+          <div className="form-group">
+            <label>Relay Status</label>
+            <select className="pro-select" value={status} onChange={e => setStatus(e.target.value)}>
+              <option value="Active">ACTIVE (On-Air)</option>
+              <option value="Disabled">MUTED (Disabled)</option>
+            </select>
+          </div>
           <button className="pro-btn btn-primary" type="submit">Publish Channel</button>
         </form>
       </div>
@@ -174,11 +216,12 @@ export default function ChannelManagement() {
               <th>LANG</th>
               <th>CATEGORY</th>
               <th>SOURCE</th>
+              <th>STATUS</th>
               <th>ACTIONS</th>
             </tr>
           </thead>
           <tbody>
-            {loading ? <tr><td colSpan="5" style={{ textAlign: "center", padding: "40px" }}>Loading catalog...</td></tr> : 
+            {loading ? <tr><td colSpan="6" style={{ textAlign: "center", padding: "40px" }}>Loading catalog...</td></tr> : 
               filteredChannels.map(ch => (
                 <tr key={ch.id}>
                   <td style={{ display: "flex", alignItems: "center", gap: "12px" }}>
@@ -200,6 +243,36 @@ export default function ChannelManagement() {
                   <td><span className="pro-badge blue">{ch.language}</span></td>
                   <td><span className="pro-badge">{ch.category}</span></td>
                   <td style={{ fontSize: "11px", color: "var(--text3)", maxWidth: "200px", overflow: "hidden", textOverflow: "ellipsis" }}>{ch.videoUrl}</td>
+                  <td>
+                    <select
+                      className={`pro-badge ${ch.status !== "Disabled" ? "active" : ""}`}
+                      value={ch.status || "Active"}
+                      onChange={(e) => toggleChannelStatus(ch.id || ch._id, e.target.value)}
+                      style={{
+                        border: "1px solid var(--border)",
+                        outline: "none",
+                        cursor: "pointer",
+                        fontWeight: "800",
+                        padding: "4px 10px",
+                        borderRadius: "20px",
+                        fontFamily: "inherit",
+                        fontSize: "11px",
+                        textAlign: "center",
+                        textAlignLast: "center",
+                        boxShadow: "0 2px 4px rgba(0,0,0,0.04)",
+                        display: "inline-block",
+                        WebkitAppearance: "none",
+                        MozAppearance: "none",
+                        appearance: "none",
+                        background: ch.status !== "Disabled" ? "rgba(16, 185, 129, 0.15)" : "rgba(239, 68, 68, 0.15)",
+                        color: ch.status !== "Disabled" ? "#10b981" : "#ef4444",
+                        borderColor: ch.status !== "Disabled" ? "#10b981" : "#ef4444"
+                      }}
+                    >
+                      <option value="Active" style={{ background: "#fff", color: "#10b981", fontWeight: "800" }}>ACTIVE</option>
+                      <option value="Disabled" style={{ background: "#fff", color: "#ef4444", fontWeight: "800" }}>MUTED</option>
+                    </select>
+                  </td>
                   <td>
                     <button className="action-btn edit" onClick={() => setEditModal({ open: true, channel: { ...ch } })}>Edit</button>
                     <button className="action-btn delete" onClick={() => setDeleteModal({ open: true, channel: ch })}>Delete</button>
@@ -229,7 +302,7 @@ export default function ChannelManagement() {
                 <div className="form-group">
                   <label>Language</label>
                   <select className="pro-select" value={editModal.channel.language} onChange={e => setEditModal({ ...editModal, channel: { ...editModal.channel, language: e.target.value } })}>
-                    {LANGUAGES.map(l => <option key={l} value={l}>{l}</option>)}
+                    {languages.map(l => <option key={l.id || l.name} value={l.name}>{l.name}</option>)}
                   </select>
                 </div>
                 <div className="form-group">
@@ -238,6 +311,13 @@ export default function ChannelManagement() {
                     {CATEGORIES.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
+              </div>
+              <div className="form-group">
+                <label>Relay Status</label>
+                <select className="pro-select" value={editModal.channel.status || "Active"} onChange={e => setEditModal({ ...editModal, channel: { ...editModal.channel, status: e.target.value } })}>
+                  <option value="Active">ACTIVE (On-Air)</option>
+                  <option value="Disabled">MUTED (Disabled)</option>
+                </select>
               </div>
               <div className="form-group">
                 <label>Change Logo (Local Upload)</label>

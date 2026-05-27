@@ -129,17 +129,35 @@ const UserDashboard = ({ onLogout }) => {
   const youtubeRef = useRef(null);
   const iframeRef = useRef(null);
 
-  const languages = ["Tamil", "Telugu", "Malayalam", "Kannada", "Hindi", "English"];
+  const [dynamicLanguages, setDynamicLanguages] = useState(["Tamil", "Telugu", "Malayalam", "Kannada", "Hindi", "English"]);
+  const languages = dynamicLanguages;
   const categories = ["Entertainment", "Music", "Movies", "News", "Kids", "Devotional"];
 
   const [channels, setChannels] = useState([]);
+
+  useEffect(() => {
+    const fetchLanguages = async () => {
+      try {
+        const res = await fetch(`${API_BASE}/languages`);
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data) && data.length > 0) {
+            setDynamicLanguages(data.map(l => l.name));
+          }
+        }
+      } catch (err) {
+        console.error("Failed to fetch dynamic languages", err);
+      }
+    };
+    fetchLanguages();
+  }, []);
 
   // TV Mode States & Helpers (Sony Bravia TV IPTV replica)
   const [isTvMode, setIsTvMode] = useState(() => {
     const saved = localStorage.getItem("isTvMode");
     return saved !== null ? saved === "true" : true;
   });
-  const [selectedTvCategory, setSelectedTvCategory] = useState("HD CHANNELS");
+  const [selectedTvCategory, setSelectedTvCategory] = useState("ALL CHANNELS");
   const [hasAutoSelectedCh, setHasAutoSelectedCh] = useState(false);
   const [activeAds, setActiveAds] = useState([]);   // up to 3 banners
   const [adIndex, setAdIndex] = useState(0);         // current slide
@@ -171,97 +189,43 @@ const UserDashboard = ({ onLogout }) => {
 
   const tvCategories = [
     "ALL CHANNELS",
-    "HD CHANNELS",
-    "TAMIL GEC",
-    "TAMIL NEWS",
-    "TAMIL MUSIC",
-    "LOCAL CHANNEL",
-    "SPORTS",
-    "KIDS",
-    "INFOTAINMENT",
-    "LIFE STY",
-    "ENGLISH GEC"
-  ];
-
-  const tvChannelDefinitions = [
-    { id: "tv-835", num: 835, name: "VIJAY HD", dbMatch: "vijay tv hd" },
-    { id: "tv-836", num: 836, name: "ZEE TAMIL HD", dbMatch: "zee tamil hd" },
-    { id: "tv-838", num: 838, name: "SUN TV HD", dbMatch: "sun tv hd" },
-    { id: "tv-839", num: 839, name: "COLORS TAMIL HD", dbMatch: "colors tamil hd" },
-    { id: "tv-842", num: 842, name: "KTV HD", dbMatch: "k tv hd" },
-    { id: "tv-843", num: 843, name: "VIJAY SUPER HD", dbMatch: "vijay super hd" },
-    { id: "tv-845", num: 845, name: "ZEE THIRAI HD", dbMatch: "zee thirai hd" },
-    { id: "tv-848", num: 848, name: "SUN MUSIC HD", dbMatch: "sun music" },
-    { id: "tv-851", num: 851, name: "MOVIES NOW HD", dbMatch: "movies now hd" },
-    { id: "tv-853", num: 853, name: "STAR MOVIES HD", dbMatch: "star movies hd" },
-    { id: "tv-854", num: 854, name: "&FLIX HD", dbMatch: "&flix hd" }
+    ...dynamicLanguages.map(lang => lang.toUpperCase())
   ];
 
   const getChannelsForTvCategory = (cat) => {
-    switch (cat) {
-      case "ALL CHANNELS":
-        const list = [...tvChannelDefinitions];
-        channels.forEach(c => {
-          const lowerName = c.name.toLowerCase();
-          const alreadyExists = list.some(item => lowerName.includes(item.dbMatch) || item.dbMatch.includes(lowerName));
-          if (!alreadyExists) {
-            const num = 860 + list.length;
-            list.push({
-              id: c.id,
-              num: num,
-              name: c.name.toUpperCase(),
-              dbMatch: lowerName
-            });
-          }
-        });
-        return list;
-      case "HD CHANNELS":
-        return tvChannelDefinitions;
-      case "TAMIL GEC":
-        return tvChannelDefinitions.filter(c => c.name.includes("VIJAY") || c.name.includes("ZEE TAMIL") || c.name.includes("SUN TV") || c.name.includes("COLORS"));
-      case "TAMIL NEWS":
-        const newsList = [];
-        const polimarCh = channels.find(c => c.name.toLowerCase().includes("polimar"));
-        if (polimarCh) {
-          newsList.push({ id: polimarCh.id, num: 840, name: "POLIMAR NEWS", dbMatch: "polimar_tv" });
-        }
-        const javaCh = channels.find(c => c.name.toLowerCase().includes("java"));
-        if (javaCh) {
-          newsList.push({ id: javaCh.id, num: 841, name: "JAVA NEWS", dbMatch: "java tv" });
-        }
-        return newsList;
-      case "TAMIL MUSIC":
-        return tvChannelDefinitions.filter(c => c.name.includes("SUN MUSIC"));
-      case "LOCAL CHANNEL":
-        const localList = [];
-        const jCh = channels.find(c => c.name.toLowerCase().includes("java"));
-        if (jCh) {
-          localList.push({ id: jCh.id, num: 841, name: "JAVA TV", dbMatch: "java tv" });
-        }
-        return localList;
-      case "SPORTS":
-        return [
-          { id: "tv-sports-1", num: 845, name: "STAR SPORTS 1 HD", dbMatch: "star sports 1" }
-        ];
-      case "KIDS":
-        return [
-          { id: "tv-kids-1", num: 848, name: "CHUTTI TV HD", dbMatch: "chutti tv" }
-        ];
-      case "INFOTAINMENT":
-        return tvChannelDefinitions.filter(c => c.name.includes("MOVIES NOW") || c.name.includes("STAR MOVIES") || c.name.includes("&FLIX"));
-      case "LIFE STY":
-        return [
-          { id: "tv-lifestyle-1", num: 853, name: "FOX LIFE HD", dbMatch: "fox life" }
-        ];
-      case "ENGLISH GEC":
-        return tvChannelDefinitions.filter(c => c.name.includes("&FLIX"));
-      default:
-        return tvChannelDefinitions;
+    const normalizedCat = (cat || "").toUpperCase();
+    if (normalizedCat === "ALL CHANNELS") {
+      return channels.map((c, index) => ({
+        id: c.id || c._id,
+        num: 101 + index,
+        name: c.name.toUpperCase(),
+        dbMatch: c.name.toLowerCase(),
+        videoUrl: c.videoUrl,
+        status: c.status || "Active"
+      }));
     }
+
+    const langFiltered = channels.filter(
+      c => (c.language || "").toUpperCase() === normalizedCat
+    );
+
+    return langFiltered.map((c, index) => ({
+      id: c.id || c._id,
+      num: 101 + index,
+      name: c.name.toUpperCase(),
+      dbMatch: c.name.toLowerCase(),
+      videoUrl: c.videoUrl,
+      status: c.status || "Active"
+    }));
   };
 
   const handleTvChannelSelect = (tvCh) => {
-    // Robust string matching to clean spaces, "hd", "tv", and symbols
+    const matchedDbCh = channels.find(c => (c.id === tvCh.id || c._id === tvCh.id));
+    if (matchedDbCh) {
+      setSelectedChannel(matchedDbCh);
+      return;
+    }
+
     const normalizeStr = (str) => {
       if (!str) return "";
       return str
@@ -274,7 +238,7 @@ const UserDashboard = ({ onLogout }) => {
 
     const tvChNorm = normalizeStr(tvCh.dbMatch);
 
-    const matchedDbCh = channels.find(c => {
+    const matchedByName = channels.find(c => {
       const cNameNorm = normalizeStr(c.name);
       if (cNameNorm === tvChNorm) return true;
       if (cNameNorm.includes(tvChNorm) || tvChNorm.includes(cNameNorm)) return true;
@@ -284,18 +248,17 @@ const UserDashboard = ({ onLogout }) => {
       return cNameLower.includes(tvMatchLower) || tvMatchLower.includes(cNameLower);
     });
 
-    if (matchedDbCh) {
-      setSelectedChannel(matchedDbCh);
+    if (matchedByName) {
+      setSelectedChannel(matchedByName);
     } else {
-      // If the admin hasn't provided the stream/link for this channel yet,
-      // create a dummy channel object with an empty videoUrl so the player shows "Inum link set panala".
       setSelectedChannel({
         id: tvCh.id,
         name: tvCh.name,
-        videoUrl: "", // Triggers the empty link display
+        videoUrl: "",
         logo: null,
         language: "",
-        category: ""
+        category: "",
+        status: tvCh.status || "Active"
       });
     }
   };
@@ -311,10 +274,10 @@ const UserDashboard = ({ onLogout }) => {
   useEffect(() => {
     const isMobile = window.innerWidth <= 768;
     if (isTvMode && !selectedChannel && channels.length > 0 && !hasAutoSelectedCh && !isMobile) {
-      const defaultCh = tvChannelDefinitions.find(c => c.name.includes("KTV")) || tvChannelDefinitions[0];
+      const defaultCh = channels[0];
       if (defaultCh) {
         setHasAutoSelectedCh(true);
-        handleTvChannelSelect(defaultCh);
+        setSelectedChannel(defaultCh);
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -368,6 +331,7 @@ const UserDashboard = ({ onLogout }) => {
             videoUrl: c.videoUrl ?? "",
             language: c.language ?? "Unknown",
             category: c.category ?? "Uncategorized",
+            status: c.status ?? "Active",
           };
         });
         setChannels(normalized);
@@ -420,6 +384,13 @@ const UserDashboard = ({ onLogout }) => {
 
   useEffect(() => {
     if (!activeStream) return;
+
+    if (selectedChannel?.status === "Disabled") {
+      setLoading(false);
+      setError("STREAM TEMPORARILY MUTED BY ADMINISTRATOR");
+      return;
+    }
+
     setLoading(true);
     setError(null);
     const { url, type } = activeStream;
@@ -602,7 +573,11 @@ const UserDashboard = ({ onLogout }) => {
     }
   };
 
-  const togglePlay = () => {
+  const togglePlay = (e) => {
+    if (e) {
+      if (typeof e.preventDefault === "function") e.preventDefault();
+      if (typeof e.stopPropagation === "function") e.stopPropagation();
+    }
     const video = videoRef.current;
     if (video) {
       if (video.paused) {
@@ -650,47 +625,6 @@ const UserDashboard = ({ onLogout }) => {
 
   return (
     <div className={`prime-dashboard-container ${selectedChannel ? "has-active-channel" : ""} ${isTvMode ? "tv-layout-active" : "web-layout-active"}`}>
-      {/* 🚀 CINEMATIC SIDE NAVIGATION DOCK 🚀 */}
-      <aside className="prime-side-dock">
-        <div className="dock-brand">
-          <img src="/logos/web.png" alt="Stream Prime" className="dock-brand-logo-img" />
-        </div>
-
-        <div className="dock-nav-group">
-          <button
-            className={`dock-btn ${isTvMode ? "active" : ""}`}
-            onClick={() => {
-              setIsTvMode(true);
-              const hdChs = getChannelsForTvCategory("HD CHANNELS");
-              if (hdChs.length > 0) {
-                handleTvChannelSelect(hdChs[0]);
-              }
-            }}
-            title="TV Mode"
-          >
-            <span className="dock-btn-icon">📺</span>
-            <span className="dock-btn-label">TV Mode</span>
-          </button>
-
-        </div>
-
-        <div className="dock-actions-group">
-
-
-          <button
-            className="dock-btn logout"
-            onClick={() => {
-              localStorage.removeItem("token");
-              onLogout();
-            }}
-            title="Logout"
-          >
-            <span className="dock-btn-icon">🚪</span>
-            <span className="dock-btn-label">Logout</span>
-          </button>
-        </div>
-      </aside>
-
       {/* 🚀 MAIN CONTENT VIEW WINDOW 🚀 */}
       <div className="prime-main-content">
         {isTvMode ? (
@@ -699,9 +633,41 @@ const UserDashboard = ({ onLogout }) => {
             <div className="sony-tv-frame">
               <div className="tv-screen">
                 {/* TV Header */}
-                <div className="tv-header">
+                <div className="tv-header" style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "20px 40px" }}>
                   <h1 className="tv-title">Channel List</h1>
-                  <div className="tv-datetime">{formatTvDateTime(time)}</div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "24px" }}>
+                    <div className="tv-datetime" style={{ fontSize: "16px", color: "var(--text)" }}>{formatTvDateTime(time)}</div>
+                    <button
+                      onClick={() => {
+                        localStorage.removeItem("token");
+                        onLogout();
+                      }}
+                      style={{
+                        background: "rgba(255, 68, 68, 0.25)",
+                        border: "1px solid rgb(255, 68, 68)",
+                        color: "#ff4444",
+                        padding: "8px 20px",
+                        borderRadius: "8px",
+                        fontSize: "14px",
+                        fontWeight: "700",
+                        cursor: "pointer",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "8px",
+                        transition: "all 0.2s"
+                      }}
+                      onMouseEnter={(e) => {
+                        e.target.style.background = "#ff4444";
+                        e.target.style.color = "#fff";
+                      }}
+                      onMouseLeave={(e) => {
+                        e.target.style.background = "rgba(255, 68, 68, 0.25)";
+                        e.target.style.color = "#ff4444";
+                      }}
+                    >
+                      🚪 Logout
+                    </button>
+                  </div>
                 </div>
 
                 {/* TV Columns Grid */}
@@ -742,11 +708,17 @@ const UserDashboard = ({ onLogout }) => {
                               return (
                                 <div
                                   key={channel.id}
-                                  className={`tv-channel-row ${isSelected ? "active" : ""}`}
+                                  className={`tv-channel-row ${isSelected ? "active" : ""} ${channel.status === "Disabled" ? "disabled" : ""}`}
+                                  style={{
+                                    opacity: channel.status === "Disabled" ? 0.5 : 1,
+                                    textDecoration: channel.status === "Disabled" ? "line-through" : "none"
+                                  }}
                                   onClick={() => handleTvChannelSelect(channel)}
                                 >
                                   <span className="tv-channel-num">{channel.num}</span>
-                                  <span className="tv-channel-title">{channel.name.toUpperCase()}</span>
+                                  <span className="tv-channel-title">
+                                    {channel.name.toUpperCase()} {channel.status === "Disabled" && " [MUTED]"}
+                                  </span>
                                 </div>
                               );
                             })
@@ -782,7 +754,7 @@ const UserDashboard = ({ onLogout }) => {
                         <span className="tv-mobile-live-badge">LIVE</span>
                       </div>
                     )}
-                    <div className="tv-video-container" onDoubleClick={handleDoubleClick}>
+                    <div className="tv-video-container" onDoubleClick={handleDoubleClick} style={{ position: "relative" }}>
                       {selectedChannel ? (
                         <>
                           {loading && (
@@ -807,6 +779,20 @@ const UserDashboard = ({ onLogout }) => {
                           <video ref={videoRef} className="tv-video-el" onClick={togglePlay} />
                           <div ref={youtubeRef} className="tv-player-embed"></div>
                           <div ref={iframeRef} className="tv-player-embed"></div>
+
+                          {/* 🔒 Secure click-overlay to prevent any external page navigation and handle clean play/pause */}
+                          <div 
+                            style={{ 
+                              position: "absolute", 
+                              top: 0, 
+                              left: 0, 
+                              width: "100%", 
+                              height: "100%", 
+                              zIndex: 5, 
+                              cursor: "pointer" 
+                            }} 
+                            onClick={togglePlay} 
+                          />
                         </>
                       ) : (
                         <div className="tv-player-placeholder">
@@ -1018,8 +1004,11 @@ const UserDashboard = ({ onLogout }) => {
                         return (
                           <div
                             key={channel.id}
-                            className={`prime-channel-item ${selectedChannel?.id === channel.id ? "active" : ""
-                              }`}
+                            className={`prime-channel-item ${selectedChannel?.id === channel.id ? "active" : ""} ${channel.status === "Disabled" ? "disabled" : ""}`}
+                            style={{
+                              opacity: channel.status === "Disabled" ? 0.65 : 1,
+                              textDecoration: channel.status === "Disabled" ? "line-through" : "none"
+                            }}
                             onClick={() => handleChannelSelect(channel)}
                           >
                             <div className="prime-channel-avatar">
@@ -1048,7 +1037,11 @@ const UserDashboard = ({ onLogout }) => {
                                 {channel.language} • {channel.category}
                               </span>
                             </div>
-                            <span className="prime-badge-live">LIVE</span>
+                            {channel.status === "Disabled" ? (
+                              <span className="prime-badge-locked" style={{ background: "rgba(239, 68, 68, 0.2)", color: "#ef4444", border: "1px solid #ef4444" }}>MUTED</span>
+                            ) : (
+                              <span className="prime-badge-live">LIVE</span>
+                            )}
                           </div>
                         );
                       })
@@ -1063,9 +1056,6 @@ const UserDashboard = ({ onLogout }) => {
                   <div className="channel-list-container">
                     {[
                       { id: "p1", name: "Sony LIV 4K", language: "Tamil", category: "Movies" },
-                      { id: "p2", name: "Star Movies HD", language: "English", category: "Movies" },
-                      { id: "p3", name: "Sun Music 4K", language: "Tamil", category: "Music" },
-                      { id: "p4", name: "Zee Tamil HD Pro", language: "Tamil", category: "Entertainment" },
                     ].map((channel) => {
                       const initials = channel.name.slice(0, 3).toUpperCase();
                       return (
@@ -1143,7 +1133,7 @@ const UserDashboard = ({ onLogout }) => {
                       </div>
                     </div>
 
-                    <div className="prime-video-container" onDoubleClick={handleDoubleClick}>
+                    <div className="prime-video-container" onDoubleClick={handleDoubleClick} style={{ position: "relative" }}>
                       {loading && (
                         <div className="prime-player-overlay loading">
                           <div className="prime-spinner"></div>
@@ -1178,9 +1168,23 @@ const UserDashboard = ({ onLogout }) => {
                       <div ref={youtubeRef} className="prime-player-embed"></div>
                       <div ref={iframeRef} className="prime-player-embed"></div>
 
+                      {/* 🔒 Secure click-overlay to prevent any external page navigation and handle clean play/pause */}
+                      <div 
+                        style={{ 
+                          position: "absolute", 
+                          top: 0, 
+                          left: 0, 
+                          width: "100%", 
+                          height: "100%", 
+                          zIndex: 5, 
+                          cursor: "pointer" 
+                        }} 
+                        onClick={togglePlay} 
+                      />
+
                       {/* Overlaid play guide - Only shown for HLS & MP4 videos where click play is handled natively */}
                       {((activeStream ? activeStream.type : getVideoType(selectedChannel.videoUrl)) === "hls" || (activeStream ? activeStream.type : getVideoType(selectedChannel.videoUrl)) === "mp4") && (
-                        <div className="prime-cinematic-overlay" onClick={togglePlay}>
+                        <div className="prime-cinematic-overlay" onClick={togglePlay} style={{ zIndex: 6 }}>
                           <div className="cinematic-play-btn">
                             <span className="play-icon">▶</span>
                           </div>

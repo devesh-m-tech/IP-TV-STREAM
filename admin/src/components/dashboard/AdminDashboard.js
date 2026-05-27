@@ -6,6 +6,9 @@ import RevenueManagement from "../revenue/RevenueManagement";
 import AnalyticsManagement from "../analytics/AnalyticsManagement";
 import AdManagement from "../ads/AdManagement";
 import DashboardOverview from "./DashboardOverview";
+import ResellerManagement from "../resellers/ResellerManagement";
+import StreamsManagement from "../streams/StreamsManagement";
+import LanguageManagement from "../languages/LanguageManagement";
 import "../../index.css";
 
 export default function AdminDashboard({ onLogout }) {
@@ -36,7 +39,7 @@ export default function AdminDashboard({ onLogout }) {
       </header>
 
       <div className="admin-layout">
-        <aside className="sidebar">
+        <aside className="sidebar" style={{ minWidth: "220px" }}>
           <button className={`nav-item ${activeTab === "overview" ? "active" : ""}`} onClick={() => setActiveTab("overview")}>
             🖥️ System Overview
           </button>
@@ -46,8 +49,17 @@ export default function AdminDashboard({ onLogout }) {
           <button className={`nav-item ${activeTab === "users" ? "active" : ""}`} onClick={() => setActiveTab("users")}>
             👤 User Directory
           </button>
+          <button className={`nav-item ${activeTab === "resellers" ? "active" : ""}`} onClick={() => setActiveTab("resellers")}>
+            🔷 Reseller Network
+          </button>
           <button className={`nav-item ${activeTab === "channels" ? "active" : ""}`} onClick={() => setActiveTab("channels")}>
             🎬 Channel Catalog
+          </button>
+          <button className={`nav-item ${activeTab === "languages" ? "active" : ""}`} onClick={() => setActiveTab("languages")}>
+            🌐 Manage Languages
+          </button>
+          <button className={`nav-item ${activeTab === "streams" ? "active" : ""}`} onClick={() => setActiveTab("streams")}>
+            📡 Live Streams
           </button>
           <button className={`nav-item ${activeTab === "plans" ? "active" : ""}`} onClick={() => setActiveTab("plans")}>
             🎫 Subscription Plans
@@ -61,13 +73,16 @@ export default function AdminDashboard({ onLogout }) {
         </aside>
 
         <main className="main-content">
-          {activeTab === "overview" && <DashboardOverview />}
-          {activeTab === "analytics" && <AnalyticsManagement />}
-          {activeTab === "users" && <UserManagement />}
-          {activeTab === "channels" && <ChannelManagement />}
-          {activeTab === "plans" && <PlanManagement />}
-          {activeTab === "revenue" && <RevenueManagement />}
-          {activeTab === "ads" && <AdManagement />}
+          <div style={{ display: activeTab === "overview" ? "block" : "none" }}><DashboardOverview /></div>
+          <div style={{ display: activeTab === "analytics" ? "block" : "none" }}><AnalyticsManagement /></div>
+          <div style={{ display: activeTab === "users" ? "block" : "none" }}><UserManagement /></div>
+          <div style={{ display: activeTab === "resellers" ? "block" : "none" }}><ResellerManagement /></div>
+          <div style={{ display: activeTab === "channels" ? "block" : "none" }}><ChannelManagement /></div>
+          <div style={{ display: activeTab === "languages" ? "block" : "none" }}><LanguageManagement /></div>
+          <div style={{ display: activeTab === "streams" ? "block" : "none" }}><StreamsManagement /></div>
+          <div style={{ display: activeTab === "plans" ? "block" : "none" }}><PlanManagement /></div>
+          <div style={{ display: activeTab === "revenue" ? "block" : "none" }}><RevenueManagement /></div>
+          <div style={{ display: activeTab === "ads" ? "block" : "none" }}><AdManagement /></div>
         </main>
       </div>
 

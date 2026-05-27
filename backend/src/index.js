@@ -16,6 +16,8 @@ const channelRoutes = require("./routes/channel");
 const planRoutes = require("./routes/plan");
 const revenueRoutes = require("./routes/revenue");
 const adRoutes = require("./routes/ad");
+const languageRoutes = require("./routes/language");
+const resellerRoutes = require("./routes/reseller");
 
 const app = express();
 
@@ -61,6 +63,12 @@ app.use("/api/revenue", revenueRoutes);
 
 // ✅ AD BANNERS API
 app.use("/api/ads", adRoutes);
+
+// ✅ LANGUAGES API
+app.use("/api/languages", languageRoutes);
+
+// ✅ RESELLERS API
+app.use("/api/resellers", resellerRoutes);
 
 // ✅ HIGH-AVAILABILITY CORS-BYPASSING HLS & TS STREAM PROXY
 app.get("/api/stream-proxy", async (req, res) => {

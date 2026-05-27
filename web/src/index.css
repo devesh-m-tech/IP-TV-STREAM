@@ -2206,7 +2206,7 @@ h4,
     flex: 1 !important;
     display: flex !important;
     flex-direction: column !important;
-    gap: 6px !important;
+    gap: 2px !important;
   }
 
   /* Left Pane Categories horizontal stacking */
@@ -2263,6 +2263,7 @@ h4,
     height: 0 !important;
     flex: 1 !important;
     min-height: 0 !important;
+    max-height: 48vh !important;
     flex-shrink: 1 !important;
     aspect-ratio: 16 / 9 !important;
     margin: 0 auto !important;

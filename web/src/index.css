@@ -2205,6 +2205,8 @@ h4,
     height: 100% !important;
     flex: 1 !important;
     display: flex !important;
+    flex-direction: column !important;
+    gap: 6px !important;
   }
 
   /* Left Pane Categories horizontal stacking */
@@ -2272,6 +2274,7 @@ h4,
     height: 55px !important;
     padding: 4px 12px !important;
     gap: 8px !important;
+    margin-bottom: 0px !important;
   }
 
   .tv-layout-active .tv-ad-image {

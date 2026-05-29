@@ -29,7 +29,7 @@ const UserDashboard = ({ onLogout }) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState(null);
   const [useProxy, setUseProxy] = useState(false);
-  const [isMuted, setIsMuted] = useState(true);
+  const [isMuted, setIsMuted] = useState(false);
   const [volume, setVolume] = useState(1);
 
   // Active playing stream details (with auto-fallback capabilities)
@@ -437,6 +437,22 @@ const UserDashboard = ({ onLogout }) => {
       return;
     }
 
+    // Smart autoplay: try with sound first, fall back to muted only if browser blocks
+    const smartPlay = (el) => {
+      el.muted = isMuted;
+      el.volume = volume;
+      el.play().then(() => {
+        // Playing with sound — perfect!
+      }).catch(() => {
+        // Browser blocked unmuted autoplay, fall back to muted
+        el.muted = true;
+        setIsMuted(true);
+        el.play().catch(() => {
+          el.controls = true;
+        });
+      });
+    };
+
     if (type === "hls") {
       if (videoElement) {
         videoElement.style.display = "block";
@@ -467,9 +483,7 @@ const UserDashboard = ({ onLogout }) => {
         hls.attachMedia(videoElement);
         hls.on(Hls.Events.MANIFEST_PARSED, () => {
           setLoading(false);
-          videoElement.play().catch(() => {
-            videoElement.controls = true;
-          });
+          smartPlay(videoElement);
         });
 
         hls.on(Hls.Events.ERROR, (event, data) => {
@@ -483,7 +497,7 @@ const UserDashboard = ({ onLogout }) => {
         videoElement.src = finalUrl;
         videoElement.onloadedmetadata = () => {
           setLoading(false);
-          videoElement.play().catch(() => { });
+          smartPlay(videoElement);
         };
         videoElement.onerror = () => {
           triggerFallback();
@@ -497,7 +511,7 @@ const UserDashboard = ({ onLogout }) => {
         videoElement.volume = volume;
         videoElement.onloadedmetadata = () => {
           setLoading(false);
-          videoElement.play().catch(() => { });
+          smartPlay(videoElement);
         };
         videoElement.onerror = () => {
           triggerFallback();

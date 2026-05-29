@@ -11,9 +11,40 @@ function removeFileIfExists(filepath) {
   }
 }
 
+/**
+ * Find the smallest available channel number starting from 101.
+ * This fills gaps left by deleted channels.
+ */
+async function getNextChannelNumber() {
+  const channels = await Channel.find({ channelNumber: { $exists: true, $ne: null } })
+    .select("channelNumber")
+    .sort({ channelNumber: 1 });
+
+  const usedNums = new Set(channels.map(c => c.channelNumber));
+  let next = 101;
+  while (usedNums.has(next)) {
+    next++;
+  }
+  return next;
+}
+
+/**
+ * GET /channels/next-number
+ * Returns the next available channel number for the admin UI to pre-fill.
+ */
+exports.getNextChannelNumber = async (req, res) => {
+  try {
+    const num = await getNextChannelNumber();
+    res.json({ nextNumber: num });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
 exports.getChannels = async (req, res) => {
   try {
-    const channels = await Channel.find().sort({ createdAt: -1 });
+    // Sort by channelNumber ascending; channels without a number go to the end
+    const channels = await Channel.find().sort({ channelNumber: 1, createdAt: -1 });
     res.json(channels);
   } catch (err) {
     res.status(500).json({ error: err.message });
@@ -31,7 +62,7 @@ exports.getChannel = async (req, res) => {
 };
 
 exports.createChannel = async (req, res) => {
-  const { name, videoUrl, language, category, drm, logoUrl, status } = req.body;
+  const { name, videoUrl, language, category, drm, logoUrl, status, channelNumber } = req.body;
   const logoPath = req.file ? `/uploads/${req.file.filename}` : (logoUrl || null);
 
   if (!name || !videoUrl || !language || !category) {
@@ -39,7 +70,28 @@ exports.createChannel = async (req, res) => {
   }
 
   try {
+    let assignedNumber;
+
+    if (channelNumber !== undefined && channelNumber !== null && channelNumber !== "") {
+      // Admin provided a number — check uniqueness
+      const parsed = parseInt(channelNumber, 10);
+      if (isNaN(parsed) || parsed < 1) {
+        return res.status(400).json({ error: "Channel number must be a positive integer" });
+      }
+      const exists = await Channel.findOne({ channelNumber: parsed });
+      if (exists) {
+        return res.status(409).json({
+          error: `Channel number ${parsed} is already taken by "${exists.name}". Please choose a different number.`
+        });
+      }
+      assignedNumber = parsed;
+    } else {
+      // Auto-assign the next available (fills deleted gaps)
+      assignedNumber = await getNextChannelNumber();
+    }
+
     const channel = new Channel({
+      channelNumber: assignedNumber,
       name,
       videoUrl,
       logo: logoPath,
@@ -49,20 +101,38 @@ exports.createChannel = async (req, res) => {
       status: status || "Active"
     });
     await channel.save();
-    res.json({ message: "Channel created", id: channel._id });
+    res.json({ message: "Channel created", id: channel._id, channelNumber: assignedNumber });
   } catch (err) {
+    if (err.code === 11000) {
+      // Duplicate key on channelNumber
+      return res.status(409).json({ error: "Channel number already exists. Please choose a different number." });
+    }
     res.status(500).json({ error: err.message });
   }
 };
 
 exports.updateChannel = async (req, res) => {
   const { id } = req.params;
-  const { name, videoUrl, language, category, drm, logoUrl, status } = req.body;
+  const { name, videoUrl, language, category, drm, logoUrl, status, channelNumber } = req.body;
   const file = req.file;
 
   try {
     const channel = await Channel.findById(id);
     if (!channel) return res.status(404).json({ error: "Channel not found" });
+
+    // Validate channelNumber uniqueness if being changed
+    if (channelNumber !== undefined && channelNumber !== null && channelNumber !== "") {
+      const parsed = parseInt(channelNumber, 10);
+      if (!isNaN(parsed) && parsed >= 1) {
+        const exists = await Channel.findOne({ channelNumber: parsed, _id: { $ne: id } });
+        if (exists) {
+          return res.status(409).json({
+            error: `Channel number ${parsed} is already taken by "${exists.name}". Please choose a different number.`
+          });
+        }
+        channel.channelNumber = parsed;
+      }
+    }
 
     if (name !== undefined) channel.name = name;
     if (videoUrl !== undefined) channel.videoUrl = videoUrl;
@@ -83,6 +153,9 @@ exports.updateChannel = async (req, res) => {
     await channel.save();
     res.json({ message: "Channel updated" });
   } catch (err) {
+    if (err.code === 11000) {
+      return res.status(409).json({ error: "Channel number already exists. Please choose a different number." });
+    }
     res.status(500).json({ error: err.message });
   }
 };

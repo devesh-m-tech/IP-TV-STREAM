@@ -195,9 +195,9 @@ const UserDashboard = ({ onLogout }) => {
   const getChannelsForTvCategory = (cat) => {
     const normalizedCat = (cat || "").toUpperCase();
     if (normalizedCat === "ALL CHANNELS") {
-      return channels.map((c, index) => ({
+      return channels.map((c) => ({
         id: c.id || c._id,
-        num: 101 + index,
+        num: c.channelNumber || "—",
         name: c.name.toUpperCase(),
         dbMatch: c.name.toLowerCase(),
         videoUrl: c.videoUrl,
@@ -209,9 +209,9 @@ const UserDashboard = ({ onLogout }) => {
       c => (c.language || "").toUpperCase() === normalizedCat
     );
 
-    return langFiltered.map((c, index) => ({
+    return langFiltered.map((c) => ({
       id: c.id || c._id,
-      num: 101 + index,
+      num: c.channelNumber || "—",
       name: c.name.toUpperCase(),
       dbMatch: c.name.toLowerCase(),
       videoUrl: c.videoUrl,
@@ -326,6 +326,7 @@ const UserDashboard = ({ onLogout }) => {
 
           return {
             id: c.id || c._id,
+            channelNumber: c.channelNumber ?? null,
             name: c.name ?? "Untitled",
             logo,
             videoUrl: c.videoUrl ?? "",
@@ -340,7 +341,7 @@ const UserDashboard = ({ onLogout }) => {
       }
     };
     fetchChannels();
-    const interval = setInterval(fetchChannels, 60000);
+    const interval = setInterval(fetchChannels, 5000); // 5s — reflects admin edits near-instantly in real-time
     return () => {
       mounted = false;
       clearInterval(interval);
@@ -642,30 +643,9 @@ const UserDashboard = ({ onLogout }) => {
                         localStorage.removeItem("token");
                         onLogout();
                       }}
-                      style={{
-                        background: "rgba(255, 68, 68, 0.25)",
-                        border: "1px solid rgb(255, 68, 68)",
-                        color: "#ff4444",
-                        padding: "8px 20px",
-                        borderRadius: "8px",
-                        fontSize: "14px",
-                        fontWeight: "700",
-                        cursor: "pointer",
-                        display: "flex",
-                        alignItems: "center",
-                        gap: "8px",
-                        transition: "all 0.2s"
-                      }}
-                      onMouseEnter={(e) => {
-                        e.target.style.background = "#ff4444";
-                        e.target.style.color = "#fff";
-                      }}
-                      onMouseLeave={(e) => {
-                        e.target.style.background = "rgba(255, 68, 68, 0.25)";
-                        e.target.style.color = "#ff4444";
-                      }}
+                      className="tv-header-logout-btn"
                     >
-                      🚪 Logout
+                      <span className="logout-icon">🚪</span> Logout
                     </button>
                   </div>
                 </div>
@@ -856,11 +836,6 @@ const UserDashboard = ({ onLogout }) => {
                     </div>
 
                   </div>
-                </div>
-
-                {/* Brand Bottom Sony Logo (exactly matching the Bravia TV in the image!) */}
-                <div className="tv-frame-bottom">
-                  <span className="tv-brand-logo-text">SONY</span>
                 </div>
               </div>
             </div>

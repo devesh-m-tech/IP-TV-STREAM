@@ -23,6 +23,7 @@ const upload = multer({ storage, limits: { fileSize: 5 * 1024 * 1024 } }); // 5M
 
 // Public routes
 router.get("/", channelController.getChannels);
+router.get("/next-number", channelController.getNextChannelNumber);
 router.get("/:id", channelController.getChannel);
 
 // Admin routes (you should protect these with verifyAdmin middleware in production)

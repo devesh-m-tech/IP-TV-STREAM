@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
 
 const channelSchema = new mongoose.Schema({
+  channelNumber: { type: Number, unique: true, sparse: true },
   name: { type: String, required: true },
   logo: { type: String },
   language: { type: String, required: true },

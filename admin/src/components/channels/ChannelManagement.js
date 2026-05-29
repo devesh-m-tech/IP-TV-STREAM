@@ -12,6 +12,7 @@ export default function ChannelManagement() {
   const [languages, setLanguages] = useState([]);
   const [loading, setLoading] = useState(false);
 
+  const [channelNumber, setChannelNumber] = useState("");
   const [name, setName] = useState("");
   const [videoUrl, setVideoUrl] = useState("");
   const [logoUrl, setLogoUrl] = useState("");
@@ -24,6 +25,15 @@ export default function ChannelManagement() {
   const [editModal, setEditModal] = useState({ open: false, channel: null });
   const [deleteModal, setDeleteModal] = useState({ open: false, channel: null });
   const [searchTerm, setSearchTerm] = useState("");
+
+  const fetchNextNumber = async () => {
+    try {
+      const res = await API.get("/channels/next-number");
+      setChannelNumber(String(res.data.nextNumber));
+    } catch (err) {
+      console.error("Failed to fetch next channel number");
+    }
+  };
 
   const fetchChannels = async () => {
     setLoading(true);
@@ -53,6 +63,7 @@ export default function ChannelManagement() {
   useEffect(() => {
     fetchChannels();
     fetchLanguages();
+    fetchNextNumber();
   }, []);
 
   const toggleChannelStatus = async (id, newStatus) => {
@@ -77,10 +88,36 @@ export default function ChannelManagement() {
     ch.category.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
+  const isNumberTaken = (num, excludeId = null) => {
+    if (!num) return false;
+    const parsed = parseInt(num, 10);
+    if (isNaN(parsed)) return false;
+    return channels.some(ch => {
+      const chId = ch.id || ch._id;
+      return ch.channelNumber === parsed && chId !== excludeId;
+    });
+  };
+
+  const getNextAvailableNumberFromState = (excludeId = null) => {
+    const used = new Set(
+      channels
+        .filter(ch => (ch.id || ch._id) !== excludeId && ch.channelNumber)
+        .map(ch => ch.channelNumber)
+    );
+    let n = 101;
+    while (used.has(n)) n++;
+    return n;
+  };
+
   const handleCreate = async (e) => {
     e.preventDefault();
+    if (isNumberTaken(channelNumber)) {
+      alert(`❌ Channel number ${channelNumber} is already in use by another channel! Click Auto-Fix or select a different number.`);
+      return;
+    }
     try {
       const form = new FormData();
+      form.append("channelNumber", channelNumber);
       form.append("name", name);
       form.append("videoUrl", videoUrl);
       form.append("language", language);
@@ -91,15 +128,25 @@ export default function ChannelManagement() {
       else form.append("logoUrl", logoUrl || "");
 
       await API.post("/channels", form, { headers: { "Content-Type": "multipart/form-data" } });
-      setName(""); setVideoUrl(""); setLogoUrl(""); setLogoFile(null); setDrm(""); setStatus("Active"); fetchChannels();
+      setName(""); setVideoUrl(""); setLogoUrl(""); setLogoFile(null); setDrm(""); setStatus("Active");
+      await fetchChannels();
+      await fetchNextNumber(); // refresh next available number after creation
       alert("✅ Channel published");
-    } catch (err) { alert("Publishing failed"); }
+    } catch (err) {
+      const msg = err.response?.data?.error || "Publishing failed";
+      alert(msg);
+    }
   };
 
   const handleEditSave = async () => {
+    const ch = editModal.channel;
+    if (isNumberTaken(ch.channelNumber, ch.id || ch._id)) {
+      alert(`❌ Channel number ${ch.channelNumber} is already taken! Click Auto-Fix or enter a unique number.`);
+      return;
+    }
     try {
-      const ch = editModal.channel;
       const form = new FormData();
+      form.append("channelNumber", ch.channelNumber || "");
       form.append("name", ch.name);
       form.append("videoUrl", ch.videoUrl);
       form.append("language", ch.language);
@@ -125,7 +172,8 @@ export default function ChannelManagement() {
       fetchChannels();
       setEditModal({ open: false, channel: null });
     } catch (err) {
-      alert("Update failed");
+      const msg = err.response?.data?.error || "Update failed";
+      alert(msg);
     }
   };
 
@@ -133,7 +181,8 @@ export default function ChannelManagement() {
     const ch = deleteModal.channel;
     try {
       await API.delete(`/channels/${ch.id}`);
-      fetchChannels();
+      await fetchChannels();
+      await fetchNextNumber(); // after delete, refresh next available (fills the gap)
       setDeleteModal({ open: false, channel: null });
     } catch (err) {
       alert("Delete failed");
@@ -147,6 +196,44 @@ export default function ChannelManagement() {
       {/* Creation form styled in a premium white card */}
       <div className="pro-card">
         <form className="pro-form-grid" onSubmit={handleCreate}>
+          <div className="form-group">
+            <label>Channel Number</label>
+            <div style={{ display: "flex", gap: "8px" }}>
+              <input
+                className="pro-input"
+                type="number"
+                min="1"
+                placeholder="e.g. 101"
+                value={channelNumber}
+                onChange={e => setChannelNumber(e.target.value)}
+                required
+                style={{
+                  borderColor: isNumberTaken(channelNumber) ? "#ef4444" : "var(--border)",
+                  flex: 1
+                }}
+                title="Each channel gets a unique number. The next available number is pre-filled."
+              />
+              {isNumberTaken(channelNumber) && (
+                <button 
+                  type="button"
+                  className="pro-btn" 
+                  style={{ background: "#ef4444", color: "#fff", padding: "4px 10px", fontSize: "11px", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "700" }}
+                  onClick={() => setChannelNumber(String(getNextAvailableNumberFromState()))}
+                >
+                  Auto-Fix
+                </button>
+              )}
+            </div>
+            {isNumberTaken(channelNumber) ? (
+              <small style={{ color: "#ef4444", fontWeight: "700", fontSize: "11px", marginTop: "4px", display: "block" }}>
+                ❌ Number #{channelNumber} is already taken! Click "Auto-Fix" to resolve.
+              </small>
+            ) : (
+              <small style={{ color: "var(--text3)", fontSize: "11px", marginTop: "4px", display: "block" }}>
+                Next available: #{channelNumber} — change if needed
+              </small>
+            )}
+          </div>
           <div className="form-group">
             <label>Name</label>
             <input className="pro-input" placeholder="e.g. Sun TV" value={name} onChange={e => setName(e.target.value)} required />
@@ -212,6 +299,7 @@ export default function ChannelManagement() {
         <table>
           <thead>
             <tr>
+              <th>#</th>
               <th>BRAND</th>
               <th>LANG</th>
               <th>CATEGORY</th>
@@ -221,9 +309,14 @@ export default function ChannelManagement() {
             </tr>
           </thead>
           <tbody>
-            {loading ? <tr><td colSpan="6" style={{ textAlign: "center", padding: "40px" }}>Loading catalog...</td></tr> : 
+            {loading ? <tr><td colSpan="7" style={{ textAlign: "center", padding: "40px" }}>Loading catalog...</td></tr> : 
               filteredChannels.map(ch => (
                 <tr key={ch.id}>
+                  <td>
+                    <span style={{ fontWeight: "800", color: "var(--accent)", fontSize: "14px" }}>
+                      {ch.channelNumber || "—"}
+                    </span>
+                  </td>
                   <td style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                     <div className="table-logo">
                       {ch.logo ? (
@@ -290,6 +383,44 @@ export default function ChannelManagement() {
           <form className="pro-modal" onClick={e => e.stopPropagation()} onSubmit={(e) => { e.preventDefault(); handleEditSave(); }}>
             <h3 style={{ marginBottom: "20px" }}>Edit Channel Metadata</h3>
             <div style={{ display: "grid", gap: "20px", marginTop: "24px" }}>
+              <div className="form-group">
+                <label>Channel Number</label>
+                <div style={{ display: "flex", gap: "8px" }}>
+                  <input
+                    className="pro-input"
+                    type="number"
+                    min="1"
+                    value={editModal.channel.channelNumber || ""}
+                    onChange={e => setEditModal({ ...editModal, channel: { ...editModal.channel, channelNumber: e.target.value } })}
+                    required
+                    style={{
+                      borderColor: isNumberTaken(editModal.channel.channelNumber, editModal.channel.id || editModal.channel._id) ? "#ef4444" : "var(--border)",
+                      flex: 1
+                    }}
+                  />
+                  {isNumberTaken(editModal.channel.channelNumber, editModal.channel.id || editModal.channel._id) && (
+                    <button 
+                      type="button"
+                      className="pro-btn" 
+                      style={{ background: "#ef4444", color: "#fff", padding: "4px 10px", fontSize: "11px", border: "none", borderRadius: "6px", cursor: "pointer", fontWeight: "700" }}
+                      onClick={() => setEditModal({ 
+                        ...editModal, 
+                        channel: { 
+                          ...editModal.channel, 
+                          channelNumber: String(getNextAvailableNumberFromState(editModal.channel.id || editModal.channel._id)) 
+                        } 
+                      })}
+                    >
+                      Auto-Fix
+                    </button>
+                  )}
+                </div>
+                {isNumberTaken(editModal.channel.channelNumber, editModal.channel.id || editModal.channel._id) && (
+                  <small style={{ color: "#ef4444", fontWeight: "700", fontSize: "11px", marginTop: "4px", display: "block" }}>
+                    ❌ Number #{editModal.channel.channelNumber} is already in use globally!
+                  </small>
+                )}
+              </div>
               <div className="form-group">
                 <label>Name</label>
                 <input className="pro-input" value={editModal.channel.name} onChange={e => setEditModal({ ...editModal, channel: { ...editModal.channel, name: e.target.value } })} required />
@@ -359,7 +490,12 @@ export default function ChannelManagement() {
         <div className="pro-modal-overlay" onClick={() => setDeleteModal({ open: false, channel: null })}>
           <div className="pro-modal" style={{ maxWidth: "400px", textAlign: "center" }} onClick={e => e.stopPropagation()}>
             <h3 style={{ color: "var(--danger)" }}>Confirm Deletion</h3>
-            <p style={{ margin: "20px 0", color: "var(--text2)" }}>Are you sure you want to delete <b>{deleteModal.channel.name}</b>?</p>
+            <p style={{ margin: "20px 0", color: "var(--text2)" }}>
+              Are you sure you want to delete <b>{deleteModal.channel.name}</b>?<br/>
+              <span style={{ color: "var(--accent)", fontSize: "13px" }}>
+                Channel #{deleteModal.channel.channelNumber} will be freed and reused for the next new channel.
+              </span>
+            </p>
             <div style={{ display: "flex", justifyContent: "center", gap: "12px" }}>
               <button className="action-btn" onClick={() => setDeleteModal({ open: false, channel: null })}>Cancel</button>
               <button className="pro-btn" style={{ background: "var(--danger)" }} onClick={handleDelete}>Confirm Delete</button>

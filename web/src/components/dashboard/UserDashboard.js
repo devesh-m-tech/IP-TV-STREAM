@@ -153,10 +153,7 @@ const UserDashboard = ({ onLogout }) => {
   }, []);
 
   // TV Mode States & Helpers (Sony Bravia TV IPTV replica)
-  const [isTvMode, setIsTvMode] = useState(() => {
-    const saved = localStorage.getItem("isTvMode");
-    return saved !== null ? saved === "true" : true;
-  });
+  const [isTvMode, setIsTvMode] = useState(true); // Force the Spectacular TV UI always
   const [selectedTvCategory, setSelectedTvCategory] = useState("ALL CHANNELS");
   const [hasAutoSelectedCh, setHasAutoSelectedCh] = useState(false);
   const [activeAds, setActiveAds] = useState([]);   // up to 3 banners

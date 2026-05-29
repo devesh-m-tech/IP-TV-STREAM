@@ -434,19 +434,14 @@ const UserDashboard = ({ onLogout }) => {
       return;
     }
 
-    // Smart autoplay: try with sound first, fall back to muted only if browser blocks
+    // Play with user-defined mute state (default unmuted).
+    // If browser blocks unmuted autoplay, video will remain paused until user interacts, 
+    // ensuring it never falls back to a muted state automatically.
     const smartPlay = (el) => {
       el.muted = isMuted;
       el.volume = volume;
-      el.play().then(() => {
-        // Playing with sound — perfect!
-      }).catch(() => {
-        // Browser blocked unmuted autoplay, fall back to muted
-        el.muted = true;
-        setIsMuted(true);
-        el.play().catch(() => {
-          el.controls = true;
-        });
+      el.play().catch((err) => {
+        console.warn("Browser blocked unmuted autoplay. User interaction required.", err);
       });
     };
 
@@ -469,9 +464,15 @@ const UserDashboard = ({ onLogout }) => {
         hls = new Hls({
           enableWorker: true,
           lowLatencyMode: true,
-          backBufferLength: 90,
-          manifestLoadingTimeOut: 10000,
-          manifestLoadingMaxRetry: 3,
+          maxBufferLength: 1,           // minimal buffer to start instantly
+          maxMaxBufferLength: 3,        // very small max buffer
+          liveSyncDurationCount: 1,     // closest possible to live edge
+          liveMaxLatencyDurationCount: 3, 
+          manifestLoadingTimeOut: 4000, // very fast manifest timeout
+          manifestLoadingMaxRetry: 4,
+          fragLoadingTimeOut: 4000,     // very fast fragment timeout
+          capLevelToPlayerSize: true,   // restrict quality to player size for faster loading
+          startLevel: -1,
           xhrSetup: (xhr) => {
             xhr.withCredentials = false;
           },
@@ -751,7 +752,7 @@ const UserDashboard = ({ onLogout }) => {
                           {loading && (
                             <div className="tv-player-overlay loading">
                               <div className="tv-spinner"></div>
-                              <p>BUFFERING LIVE CHANNEL FEED...</p>
+                              <p>LOADING...</p>
                             </div>
                           )}
                           {error && (
@@ -1123,7 +1124,7 @@ const UserDashboard = ({ onLogout }) => {
                       {loading && (
                         <div className="prime-player-overlay loading">
                           <div className="prime-spinner"></div>
-                          <p>BUFFERING THEATRICAL MEDIA FEED...</p>
+                          <p>LOADING...</p>
                         </div>
                       )}
                       {error && (

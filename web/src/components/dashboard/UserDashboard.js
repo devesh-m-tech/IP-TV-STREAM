@@ -35,51 +35,7 @@ const UserDashboard = ({ onLogout }) => {
   // Active playing stream details (with auto-fallback capabilities)
   const [activeStream, setActiveStream] = useState(null);
 
-  // Dynamic public fallback mapping to guarantee 100% working feeds
-  const getFallbackStream = (channelName) => {
-    const name = (channelName || "").toLowerCase();
 
-    // We route failed streams to 100% active, genuine public HLS Live Tamil TV channels
-    // (like Puthiya Thalaimurai, Polimer News, or DD Tamil) so they are NEVER dummy videos!
-    let fallbackUrl = "https://segment.yuppcdn.net/240122/puthiya/playlist.m3u8"; // Puthiya Thalaimurai (Actual Live Tamil TV)
-    let displayName = "Tamil Live TV (Secure Backup Broadcast)";
-
-    if (name.includes("sun tv") || name.includes("sunnews") || name.includes("sun tv hd")) {
-      fallbackUrl = "https://segment.yuppcdn.net/240122/puthiya/playlist.m3u8";
-      displayName = "Sun TV (Live Backup Broadcast)";
-    } else if (name.includes("vijay")) {
-      fallbackUrl = "https://segment.yuppcdn.net/240122/puthiya/playlist.m3u8";
-      displayName = "Star Vijay (Live Backup Broadcast)";
-    } else if (name.includes("zee tamil")) {
-      fallbackUrl = "https://segment.yuppcdn.net/240122/news7/playlist.m3u8"; // News 7 Tamil
-      displayName = "Zee Tamil (Live Backup Broadcast)";
-    } else if (name.includes("polimar") || name.includes("polimer")) {
-      fallbackUrl = "https://live-cf-polimernews.dailyhunt.in/master.m3u8"; // Polimer News
-      displayName = "Polimer TV (Live Backup Broadcast)";
-    } else if (name.includes("thanthi")) {
-      fallbackUrl = "https://cdn-3.pishow.tv/live/1612/master.m3u8"; // Thanthi TV
-      displayName = "Thanthi TV (Live Backup Broadcast)";
-    } else if (name.includes("news 7") || name.includes("news7")) {
-      fallbackUrl = "https://segment.yuppcdn.net/240122/news7/playlist.m3u8";
-      displayName = "News 7 Tamil (Live Backup Broadcast)";
-    } else if (name.includes("puthiya thalaimurai")) {
-      fallbackUrl = "https://segment.yuppcdn.net/240122/puthiya/playlist.m3u8";
-      displayName = "Puthiya Thalaimurai (Live Backup Broadcast)";
-    } else if (name.includes("dd tamil") || name.includes("podhigai")) {
-      fallbackUrl = "https://d2lk5u59tns74c.cloudfront.net/out/v1/abf46b14847e45499f4a47f3a9afe93d/index.m3u8"; // DD Tamil
-      displayName = "DD Tamil (Live Backup Broadcast)";
-    } else if (name.trim()) {
-      const words = name.split(" ");
-      const capitalized = words.map(w => w.charAt(0).toUpperCase() + w.slice(1)).join(" ");
-      displayName = `${capitalized} (Live Backup Broadcast)`;
-    }
-
-    return {
-      type: "hls",
-      url: fallbackUrl,
-      name: displayName
-    };
-  };
 
   const normalizeStreamUrl = (url) => {
     if (!url) return url;
@@ -398,20 +354,8 @@ const UserDashboard = ({ onLogout }) => {
     let hls;
 
     const triggerFallback = () => {
-      if (activeStream.isFallback) {
-        setLoading(false);
-        setError("Stream currently unavailable");
-        return;
-      }
-
-      const fallback = getFallbackStream(selectedChannel?.name);
-      console.warn("⚠️ Stream playback failed. Activating high-availability backup stream:", fallback.name);
-      setActiveStream({
-        url: fallback.url,
-        type: fallback.type,
-        isFallback: true,
-        fallbackName: fallback.name
-      });
+      setLoading(false);
+      setError("Stream Expired or Unavailable");
     };
 
     if (videoElement) {

@@ -407,15 +407,11 @@ const UserDashboard = ({ onLogout }) => {
       if (Hls.isSupported()) {
         hls = new Hls({
           enableWorker: true,
-          lowLatencyMode: true,
-          maxBufferLength: 1,           // minimal buffer to start instantly
-          maxMaxBufferLength: 3,        // very small max buffer
-          liveSyncDurationCount: 1,     // closest possible to live edge
-          liveMaxLatencyDurationCount: 3, 
-          manifestLoadingTimeOut: 4000, // very fast manifest timeout
+          lowLatencyMode: false,
+          maxBufferLength: 30,           
+          maxMaxBufferLength: 60,        
           manifestLoadingMaxRetry: 4,
-          fragLoadingTimeOut: 4000,     // very fast fragment timeout
-          capLevelToPlayerSize: true,   // restrict quality to player size for faster loading
+          capLevelToPlayerSize: true,   
           startLevel: -1,
           xhrSetup: (xhr) => {
             xhr.withCredentials = false;

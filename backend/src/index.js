@@ -152,17 +152,8 @@ app.get("/api/stream-proxy", async (req, res) => {
       
       const body = response.body;
       if (body) {
-        const reader = body.getReader();
-        const pump = async () => {
-          const { done, value } = await reader.read();
-          if (done) {
-            res.end();
-            return;
-          }
-          res.write(Buffer.from(value));
-          await pump();
-        };
-        await pump();
+        const { Readable } = require('stream');
+        Readable.fromWeb(body).pipe(res);
       } else {
         res.end();
       }
